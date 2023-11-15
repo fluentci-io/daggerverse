@@ -10,54 +10,53 @@ import { computeQuery } from "./utils.ts";
  * @hidden
  */
 export type QueryTree = {
-  operation: string
-  args?: Record<string, unknown>
-}
+  operation: string;
+  args?: Record<string, unknown>;
+};
 
 /**
  * @hidden
  */
 export type Metadata = {
   [key: string]: {
-    is_enum?: boolean
-  }
-}
+    is_enum?: boolean;
+  };
+};
 
 interface ClientConfig {
-  queryTree?: QueryTree[]
-  host?: string
-  sessionToken?: string
+  queryTree?: QueryTree[];
+  host?: string;
+  sessionToken?: string;
 }
 
 class BaseClient {
-  protected _queryTree: QueryTree[]
-  protected client: GraphQLClient
+  protected _queryTree: QueryTree[];
+  protected client: GraphQLClient;
   /**
    * @defaultValue `127.0.0.1:8080`
    */
-  public clientHost: string
-  public sessionToken: string
+  public clientHost: string;
+  public sessionToken: string;
 
   /**
    * @hidden
    */
   constructor({ queryTree, host, sessionToken }: ClientConfig = {}) {
-    this._queryTree = queryTree || []
-    this.clientHost = host || "127.0.0.1:8080"
-    this.sessionToken = sessionToken || ""
+    this._queryTree = queryTree || [];
+    this.clientHost = host || "127.0.0.1:8080";
+    this.sessionToken = sessionToken || "";
     this.client = new GraphQLClient(`http://${host}/query`, {
       headers: {
-        Authorization:
-          "Basic " + Buffer.from(sessionToken + ":").toString("base64"),
+        Authorization: "Basic " + btoa(sessionToken + ":"),
       },
-    })
+    });
   }
 
   /**
    * @hidden
    */
   get queryTree() {
-    return this._queryTree
+    return this._queryTree;
   }
 }
 
@@ -65,13 +64,13 @@ export type BuildArg = {
   /**
    * The build argument name.
    */
-  name: string
+  name: string;
 
   /**
    * The build argument value.
    */
-  value: string
-}
+  value: string;
+};
 
 /**
  * Sharing mode of the cache volume.
@@ -96,14 +95,14 @@ export enum CacheSharingMode {
 /**
  * A global cache volume identifier.
  */
-export type CacheVolumeID = string & { __CacheVolumeID: never }
+export type CacheVolumeID = string & { __CacheVolumeID: never };
 
 export type ContainerAsTarballOpts = {
   /**
    * Identifiers for other platform specific containers.
    * Used for multi-platform image.
    */
-  platformVariants?: Container[]
+  platformVariants?: Container[];
 
   /**
    * Force each layer of the image to use the specified compression algorithm.
@@ -112,15 +111,15 @@ export type ContainerAsTarballOpts = {
    * different layers). If this is unset and a layer has no compressed blob in the
    * engine's cache, then it will be compressed using Gzip.
    */
-  forcedCompression?: ImageLayerCompression
+  forcedCompression?: ImageLayerCompression;
 
   /**
    * Use the specified media types for the image's layers. Defaults to OCI, which
    * is largely compatible with most recent container runtimes, but Docker may be needed
    * for older runtimes without OCI support.
    */
-  mediaTypes?: ImageMediaTypes
-}
+  mediaTypes?: ImageMediaTypes;
+};
 
 export type ContainerBuildOpts = {
   /**
@@ -128,17 +127,17 @@ export type ContainerBuildOpts = {
    *
    * Default: './Dockerfile'.
    */
-  dockerfile?: string
+  dockerfile?: string;
 
   /**
    * Additional build arguments.
    */
-  buildArgs?: BuildArg[]
+  buildArgs?: BuildArg[];
 
   /**
    * Target build stage to build.
    */
-  target?: string
+  target?: string;
 
   /**
    * Secrets to pass to the build.
@@ -149,15 +148,15 @@ export type ContainerBuildOpts = {
    * and mount path /run/secrets/[secret-name]
    * e.g. RUN --mount=type=secret,id=my-secret curl url?token=$(cat /run/secrets/my-secret)"
    */
-  secrets?: Secret[]
-}
+  secrets?: Secret[];
+};
 
 export type ContainerExportOpts = {
   /**
    * Identifiers for other platform specific containers.
    * Used for multi-platform image.
    */
-  platformVariants?: Container[]
+  platformVariants?: Container[];
 
   /**
    * Force each layer of the exported image to use the specified compression algorithm.
@@ -166,42 +165,42 @@ export type ContainerExportOpts = {
    * different layers). If this is unset and a layer has no compressed blob in the
    * engine's cache, then it will be compressed using Gzip.
    */
-  forcedCompression?: ImageLayerCompression
+  forcedCompression?: ImageLayerCompression;
 
   /**
    * Use the specified media types for the exported image's layers. Defaults to OCI, which
    * is largely compatible with most recent container runtimes, but Docker may be needed
    * for older runtimes without OCI support.
    */
-  mediaTypes?: ImageMediaTypes
-}
+  mediaTypes?: ImageMediaTypes;
+};
 
 export type ContainerImportOpts = {
   /**
    * Identifies the tag to import from the archive, if the archive bundles
    * multiple tags.
    */
-  tag?: string
-}
+  tag?: string;
+};
 
 export type ContainerPipelineOpts = {
   /**
    * Pipeline description.
    */
-  description?: string
+  description?: string;
 
   /**
    * Pipeline labels.
    */
-  labels?: PipelineLabel[]
-}
+  labels?: PipelineLabel[];
+};
 
 export type ContainerPublishOpts = {
   /**
    * Identifiers for other platform specific containers.
    * Used for multi-platform image.
    */
-  platformVariants?: Container[]
+  platformVariants?: Container[];
 
   /**
    * Force each layer of the published image to use the specified compression algorithm.
@@ -210,33 +209,33 @@ export type ContainerPublishOpts = {
    * different layers). If this is unset and a layer has no compressed blob in the
    * engine's cache, then it will be compressed using Gzip.
    */
-  forcedCompression?: ImageLayerCompression
+  forcedCompression?: ImageLayerCompression;
 
   /**
    * Use the specified media types for the published image's layers. Defaults to OCI, which
    * is largely compatible with most recent registries, but Docker may be needed for older
    * registries without OCI support.
    */
-  mediaTypes?: ImageMediaTypes
-}
+  mediaTypes?: ImageMediaTypes;
+};
 
 export type ContainerWithDefaultArgsOpts = {
   /**
    * Arguments to prepend to future executions (e.g., ["-v", "--no-cache"]).
    */
-  args?: string[]
-}
+  args?: string[];
+};
 
 export type ContainerWithDirectoryOpts = {
   /**
    * Patterns to exclude in the written directory (e.g., ["node_modules/**", ".gitignore", ".git/"]).
    */
-  exclude?: string[]
+  exclude?: string[];
 
   /**
    * Patterns to include in the written directory (e.g., ["*.go", "go.mod", "go.sum"]).
    */
-  include?: string[]
+  include?: string[];
 
   /**
    * A user:group to set for the directory and its contents.
@@ -245,37 +244,37 @@ export type ContainerWithDirectoryOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithEnvVariableOpts = {
   /**
    * Replace ${VAR} or $VAR in the value according to the current environment
    * variables defined in the container (e.g., "/opt/bin:$PATH").
    */
-  expand?: boolean
-}
+  expand?: boolean;
+};
 
 export type ContainerWithExecOpts = {
   /**
    * If the container has an entrypoint, ignore it for args rather than using it to wrap them.
    */
-  skipEntrypoint?: boolean
+  skipEntrypoint?: boolean;
 
   /**
    * Content to write to the command's standard input before closing (e.g., "Hello world").
    */
-  stdin?: string
+  stdin?: string;
 
   /**
    * Redirect the command's standard output to a file in the container (e.g., "/tmp/stdout").
    */
-  redirectStdout?: string
+  redirectStdout?: string;
 
   /**
    * Redirect the command's standard error to a file in the container (e.g., "/tmp/stderr").
    */
-  redirectStderr?: string
+  redirectStderr?: string;
 
   /**
    * Provides dagger access to the executed command.
@@ -283,7 +282,7 @@ export type ContainerWithExecOpts = {
    * Do not use this option unless you trust the command being executed.
    * The command being executed WILL BE GRANTED FULL ACCESS TO YOUR HOST FILESYSTEM.
    */
-  experimentalPrivilegedNesting?: boolean
+  experimentalPrivilegedNesting?: boolean;
 
   /**
    * Execute the command with all root capabilities. This is similar to running a command
@@ -291,20 +290,20 @@ export type ContainerWithExecOpts = {
    * does not provide any security guarantees when using this option. It should only be used
    * when absolutely necessary and only with trusted commands.
    */
-  insecureRootCapabilities?: boolean
-}
+  insecureRootCapabilities?: boolean;
+};
 
 export type ContainerWithExposedPortOpts = {
   /**
    * Transport layer network protocol
    */
-  protocol?: NetworkProtocol
+  protocol?: NetworkProtocol;
 
   /**
    * Optional port description
    */
-  description?: string
-}
+  description?: string;
+};
 
 export type ContainerWithFileOpts = {
   /**
@@ -312,7 +311,7 @@ export type ContainerWithFileOpts = {
    *
    * Default: 0644.
    */
-  permissions?: number
+  permissions?: number;
 
   /**
    * A user:group to set for the file.
@@ -321,19 +320,19 @@ export type ContainerWithFileOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithMountedCacheOpts = {
   /**
    * Identifier of the directory to use as the cache volume's root.
    */
-  source?: Directory
+  source?: Directory;
 
   /**
    * Sharing mode of the cache volume.
    */
-  sharing?: CacheSharingMode
+  sharing?: CacheSharingMode;
 
   /**
    * A user:group to set for the mounted cache directory.
@@ -346,8 +345,8 @@ export type ContainerWithMountedCacheOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithMountedDirectoryOpts = {
   /**
@@ -357,8 +356,8 @@ export type ContainerWithMountedDirectoryOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithMountedFileOpts = {
   /**
@@ -368,8 +367,8 @@ export type ContainerWithMountedFileOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithMountedSecretOpts = {
   /**
@@ -379,7 +378,7 @@ export type ContainerWithMountedSecretOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
+  owner?: string;
 
   /**
    * Permission given to the mounted secret (e.g., 0600).
@@ -387,21 +386,21 @@ export type ContainerWithMountedSecretOpts = {
    *
    * Default: 0400.
    */
-  mode?: number
-}
+  mode?: number;
+};
 
 export type ContainerWithNewFileOpts = {
   /**
    * Content of the file to write (e.g., "Hello world!").
    */
-  contents?: string
+  contents?: string;
 
   /**
    * Permission given to the written file (e.g., 0600).
    *
    * Default: 0644.
    */
-  permissions?: number
+  permissions?: number;
 
   /**
    * A user:group to set for the file.
@@ -410,8 +409,8 @@ export type ContainerWithNewFileOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithUnixSocketOpts = {
   /**
@@ -421,25 +420,25 @@ export type ContainerWithUnixSocketOpts = {
    *
    * If the group is omitted, it defaults to the same as the user.
    */
-  owner?: string
-}
+  owner?: string;
+};
 
 export type ContainerWithoutExposedPortOpts = {
   /**
    * Port protocol to unexpose
    */
-  protocol?: NetworkProtocol
-}
+  protocol?: NetworkProtocol;
+};
 
 /**
  * A unique container identifier. Null designates an empty container (scratch).
  */
-export type ContainerID = string & { __ContainerID: never }
+export type ContainerID = string & { __ContainerID: never };
 
 /**
  * The `DateTime` scalar type represents a DateTime. The DateTime is serialized as an RFC 3339 quoted string
  */
-export type DateTime = string & { __DateTime: never }
+export type DateTime = string & { __DateTime: never };
 
 export type DirectoryAsModuleOpts = {
   /**
@@ -454,8 +453,8 @@ export type DirectoryAsModuleOpts = {
    * If not set, the module source code is loaded from the root of the
    * directory.
    */
-  sourceSubpath?: string
-}
+  sourceSubpath?: string;
+};
 
 export type DirectoryDockerBuildOpts = {
   /**
@@ -463,61 +462,61 @@ export type DirectoryDockerBuildOpts = {
    *
    * Defaults: './Dockerfile'.
    */
-  dockerfile?: string
+  dockerfile?: string;
 
   /**
    * The platform to build.
    */
-  platform?: Platform
+  platform?: Platform;
 
   /**
    * Build arguments to use in the build.
    */
-  buildArgs?: BuildArg[]
+  buildArgs?: BuildArg[];
 
   /**
    * Target build stage to build.
    */
-  target?: string
+  target?: string;
 
   /**
    * Secrets to pass to the build.
    *
    * They will be mounted at /run/secrets/[secret-name].
    */
-  secrets?: Secret[]
-}
+  secrets?: Secret[];
+};
 
 export type DirectoryEntriesOpts = {
   /**
    * Location of the directory to look at (e.g., "/src").
    */
-  path?: string
-}
+  path?: string;
+};
 
 export type DirectoryPipelineOpts = {
   /**
    * Pipeline description.
    */
-  description?: string
+  description?: string;
 
   /**
    * Pipeline labels.
    */
-  labels?: PipelineLabel[]
-}
+  labels?: PipelineLabel[];
+};
 
 export type DirectoryWithDirectoryOpts = {
   /**
    * Exclude artifacts that match the given pattern (e.g., ["node_modules/", ".git*"]).
    */
-  exclude?: string[]
+  exclude?: string[];
 
   /**
    * Include only artifacts that match the given pattern (e.g., ["app/", "package.*"]).
    */
-  include?: string[]
-}
+  include?: string[];
+};
 
 export type DirectoryWithFileOpts = {
   /**
@@ -525,8 +524,8 @@ export type DirectoryWithFileOpts = {
    *
    * Default: 0644.
    */
-  permissions?: number
-}
+  permissions?: number;
+};
 
 export type DirectoryWithNewDirectoryOpts = {
   /**
@@ -534,8 +533,8 @@ export type DirectoryWithNewDirectoryOpts = {
    *
    * Default: 0755.
    */
-  permissions?: number
-}
+  permissions?: number;
+};
 
 export type DirectoryWithNewFileOpts = {
   /**
@@ -543,77 +542,77 @@ export type DirectoryWithNewFileOpts = {
    *
    * Default: 0644.
    */
-  permissions?: number
-}
+  permissions?: number;
+};
 
 /**
  * A content-addressed directory identifier.
  */
-export type DirectoryID = string & { __DirectoryID: never }
+export type DirectoryID = string & { __DirectoryID: never };
 
 export type FileExportOpts = {
   /**
    * If allowParentDirPath is true, the path argument can be a directory path, in which case
    * the file will be created in that directory.
    */
-  allowParentDirPath?: boolean
-}
+  allowParentDirPath?: boolean;
+};
 
 /**
  * A file identifier.
  */
-export type FileID = string & { __FileID: never }
+export type FileID = string & { __FileID: never };
 
 export type FunctionWithArgOpts = {
   /**
    * A doc string for the argument, if any
    */
-  description?: string
+  description?: string;
 
   /**
    * A default value to use for this argument if not explicitly set by the caller, if any
    */
-  defaultValue?: JSON
-}
+  defaultValue?: JSON;
+};
 
 /**
  * A reference to a FunctionArg.
  */
-export type FunctionArgID = string & { __FunctionArgID: never }
+export type FunctionArgID = string & { __FunctionArgID: never };
 
 /**
  * A reference to a Function.
  */
-export type FunctionID = string & { __FunctionID: never }
+export type FunctionID = string & { __FunctionID: never };
 
 /**
  * A reference to GeneratedCode.
  */
-export type GeneratedCodeID = string & { __GeneratedCodeID: never }
+export type GeneratedCodeID = string & { __GeneratedCodeID: never };
 
 export type GitRefTreeOpts = {
-  sshKnownHosts?: string
-  sshAuthSocket?: Socket
-}
+  sshKnownHosts?: string;
+  sshAuthSocket?: Socket;
+};
 
 export type HostDirectoryOpts = {
   /**
    * Exclude artifacts that match the given pattern (e.g., ["node_modules/", ".git*"]).
    */
-  exclude?: string[]
+  exclude?: string[];
 
   /**
    * Include only artifacts that match the given pattern (e.g., ["app/", "package.*"]).
    */
-  include?: string[]
-}
+  include?: string[];
+};
 
 export type HostServiceOpts = {
   /**
    * Upstream host to forward traffic to.
    */
-  host?: string
-}
+  host?: string;
+};
 
 export type HostTunnelOpts = {
   /**
@@ -622,7 +621,7 @@ export type HostTunnelOpts = {
    *
    * Note: enabling may result in port conflicts.
    */
-  native?: boolean
+  native?: boolean;
 
   /**
    * Configure explicit port forwarding rules for the tunnel.
@@ -636,13 +635,13 @@ export type HostTunnelOpts = {
    *
    * If ports are given and native is true, the ports are additive.
    */
-  ports?: PortForward[]
-}
+  ports?: PortForward[];
+};
 
 /**
  * The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
  */
-export type ID = string & { __ID: never }
+export type ID = string & { __ID: never };
 
 /**
  * Compression algorithm to use for image layers.
@@ -663,12 +662,12 @@ export enum ImageMediaTypes {
 /**
  * An arbitrary JSON-encoded value.
  */
-export type JSON = string & { __JSON: never }
+export type JSON = string & { __JSON: never };
 
 /**
  * A reference to a Module.
  */
-export type ModuleID = string & { __ModuleID: never }
+export type ModuleID = string & { __ModuleID: never };
 
 /**
  * Transport layer network protocol associated to a port.
@@ -688,138 +687,138 @@ export type PipelineLabel = {
   /**
    * Label name.
    */
-  name: string
+  name: string;
 
   /**
    * Label value.
    */
-  value: string
-}
+  value: string;
+};
 
 /**
  * The platform config OS and architecture in a Container.
  *
  * The format is [os]/[platform]/[version] (e.g., "darwin/arm64/v7", "windows/amd64", "linux/arm64").
  */
-export type Platform = string & { __Platform: never }
+export type Platform = string & { __Platform: never };
 
 export type PortForward = {
   /**
    * Destination port for traffic.
    */
-  backend: number
+  backend: number;
 
   /**
    * Port to expose to clients. If unspecified, a default will be chosen.
    */
-  frontend?: number
+  frontend?: number;
 
   /**
    * Protocol to use for traffic.
    */
-  protocol?: NetworkProtocol
-}
+  protocol?: NetworkProtocol;
+};
 
 export type ClientContainerOpts = {
-  id?: ContainerID
-  platform?: Platform
-}
+  id?: ContainerID;
+  platform?: Platform;
+};
 
 export type ClientDirectoryOpts = {
-  id?: DirectoryID
-}
+  id?: DirectoryID;
+};
 
 export type ClientGitOpts = {
   /**
    * Set to true to keep .git directory.
    */
-  keepGitDir?: boolean
+  keepGitDir?: boolean;
 
   /**
    * Set SSH known hosts
    */
-  sshKnownHosts?: string
+  sshKnownHosts?: string;
 
   /**
    * Set SSH auth socket
    */
-  sshAuthSocket?: Socket
+  sshAuthSocket?: Socket;
 
   /**
    * A service which must be started before the repo is fetched.
    */
-  experimentalServiceHost?: Service
-}
+  experimentalServiceHost?: Service;
+};
 
 export type ClientHttpOpts = {
   /**
    * A service which must be started before the URL is fetched.
    */
-  experimentalServiceHost?: Service
-}
+  experimentalServiceHost?: Service;
+};
 
 export type ClientModuleConfigOpts = {
-  subpath?: string
-}
+  subpath?: string;
+};
 
 export type ClientPipelineOpts = {
   /**
    * Pipeline description.
    */
-  description?: string
+  description?: string;
 
   /**
    * Pipeline labels.
    */
-  labels?: PipelineLabel[]
-}
+  labels?: PipelineLabel[];
+};
 
 export type ClientSocketOpts = {
-  id?: SocketID
-}
+  id?: SocketID;
+};
 
 /**
  * A unique identifier for a secret.
  */
-export type SecretID = string & { __SecretID: never }
+export type SecretID = string & { __SecretID: never };
 
 export type ServiceEndpointOpts = {
   /**
    * The exposed port number for the endpoint
    */
-  port?: number
+  port?: number;
 
   /**
    * Return a URL with the given scheme, eg. http for http://
    */
-  scheme?: string
-}
+  scheme?: string;
+};
 
 /**
  * A unique service identifier.
  */
-export type ServiceID = string & { __ServiceID: never }
+export type ServiceID = string & { __ServiceID: never };
 
 /**
  * A content-addressed socket identifier.
  */
-export type SocketID = string & { __SocketID: never }
+export type SocketID = string & { __SocketID: never };
 
 export type TypeDefWithFieldOpts = {
   /**
    * A doc string for the field, if any
    */
-  description?: string
-}
+  description?: string;
+};
 
 export type TypeDefWithObjectOpts = {
-  description?: string
-}
+  description?: string;
+};
 
 /**
  * A reference to a TypeDef.
  */
-export type TypeDefID = string & { __TypeDefID: never }
+export type TypeDefID = string & { __TypeDefID: never };
 
 /**
  * Distinguishes the different kinds of TypeDefs.
@@ -868,21 +867,21 @@ export enum TypeDefKind {
  *
  * A Null Void is used as a placeholder for resolvers that do not return anything.
  */
-export type Void = string & { __Void: never }
+export type Void = string & { __Void: never };
 
 export type __TypeEnumValuesOpts = {
-  includeDeprecated?: boolean
-}
+  includeDeprecated?: boolean;
+};
 
 export type __TypeFieldsOpts = {
-  includeDeprecated?: boolean
-}
+  includeDeprecated?: boolean;
+};
 
 /**
  * A directory whose contents persist across runs.
  */
 export class CacheVolume extends BaseClient {
-  private readonly _id?: CacheVolumeID = undefined
+  private readonly _id?: CacheVolumeID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -891,13 +890,13 @@ export class CacheVolume extends BaseClient {
     parent?: { queryTree?: QueryTree[]; host?: string; sessionToken?: string },
     _id?: CacheVolumeID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
+    this._id = _id;
   }
   async id(): Promise<CacheVolumeID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<CacheVolumeID> = await computeQuery(
@@ -908,9 +907,9 @@ export class CacheVolume extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -918,19 +917,19 @@ export class CacheVolume extends BaseClient {
  * An OCI-compatible container, also known as a docker container.
  */
 export class Container extends BaseClient {
-  private readonly _id?: ContainerID = undefined
-  private readonly _envVariable?: string = undefined
-  private readonly _export?: boolean = undefined
-  private readonly _imageRef?: string = undefined
-  private readonly _label?: string = undefined
-  private readonly _platform?: Platform = undefined
-  private readonly _publish?: string = undefined
-  private readonly _shellEndpoint?: string = undefined
-  private readonly _stderr?: string = undefined
-  private readonly _stdout?: string = undefined
-  private readonly _sync?: ContainerID = undefined
-  private readonly _user?: string = undefined
-  private readonly _workdir?: string = undefined
+  private readonly _id?: ContainerID = undefined;
+  private readonly _envVariable?: string = undefined;
+  private readonly _export?: boolean = undefined;
+  private readonly _imageRef?: string = undefined;
+  private readonly _label?: string = undefined;
+  private readonly _platform?: Platform = undefined;
+  private readonly _publish?: string = undefined;
+  private readonly _shellEndpoint?: string = undefined;
+  private readonly _stderr?: string = undefined;
+  private readonly _stdout?: string = undefined;
+  private readonly _sync?: ContainerID = undefined;
+  private readonly _user?: string = undefined;
+  private readonly _workdir?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -951,21 +950,21 @@ export class Container extends BaseClient {
     _user?: string,
     _workdir?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._envVariable = _envVariable
-    this._export = _export
-    this._imageRef = _imageRef
-    this._label = _label
-    this._platform = _platform
-    this._publish = _publish
-    this._shellEndpoint = _shellEndpoint
-    this._stderr = _stderr
-    this._stdout = _stdout
-    this._sync = _sync
-    this._user = _user
-    this._workdir = _workdir
+    this._id = _id;
+    this._envVariable = _envVariable;
+    this._export = _export;
+    this._imageRef = _imageRef;
+    this._label = _label;
+    this._platform = _platform;
+    this._publish = _publish;
+    this._shellEndpoint = _shellEndpoint;
+    this._stderr = _stderr;
+    this._stdout = _stdout;
+    this._sync = _sync;
+    this._user = _user;
+    this._workdir = _workdir;
   }
 
   /**
@@ -973,7 +972,7 @@ export class Container extends BaseClient {
    */
   async id(): Promise<ContainerID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<ContainerID> = await computeQuery(
@@ -984,9 +983,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1004,7 +1003,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1024,7 +1023,7 @@ export class Container extends BaseClient {
     const metadata: Metadata = {
       forcedCompression: { is_enum: true },
       mediaTypes: { is_enum: true },
-    }
+    };
 
     return new File({
       queryTree: [
@@ -1036,7 +1035,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1066,7 +1065,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1081,9 +1080,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1103,7 +1102,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1118,9 +1117,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1129,7 +1128,7 @@ export class Container extends BaseClient {
    */
   async envVariable(name: string): Promise<string> {
     if (this._envVariable) {
-      return this._envVariable
+      return this._envVariable;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1141,9 +1140,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1151,9 +1150,9 @@ export class Container extends BaseClient {
    */
   async envVariables(): Promise<EnvVariable[]> {
     type envVariables = {
-      name: string
-      value: string
-    }
+      name: string;
+      value: string;
+    };
 
     const response: Awaited<envVariables[]> = await computeQuery(
       [
@@ -1166,7 +1165,7 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -1179,7 +1178,7 @@ export class Container extends BaseClient {
           r.name,
           r.value
         )
-    )
+    );
   }
 
   /**
@@ -1198,7 +1197,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1218,7 +1217,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1241,13 +1240,13 @@ export class Container extends BaseClient {
    */
   async export(path: string, opts?: ContainerExportOpts): Promise<boolean> {
     if (this._export) {
-      return this._export
+      return this._export;
     }
 
     const metadata: Metadata = {
       forcedCompression: { is_enum: true },
       mediaTypes: { is_enum: true },
-    }
+    };
 
     const response: Awaited<boolean> = await computeQuery(
       [
@@ -1258,9 +1257,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1271,10 +1270,10 @@ export class Container extends BaseClient {
    */
   async exposedPorts(): Promise<Port[]> {
     type exposedPorts = {
-      description: string
-      port: number
-      protocol: NetworkProtocol
-    }
+      description: string;
+      port: number;
+      protocol: NetworkProtocol;
+    };
 
     const response: Awaited<exposedPorts[]> = await computeQuery(
       [
@@ -1287,7 +1286,7 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -1301,7 +1300,7 @@ export class Container extends BaseClient {
           r.port,
           r.protocol
         )
-    )
+    );
   }
 
   /**
@@ -1321,7 +1320,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1341,7 +1340,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1349,7 +1348,7 @@ export class Container extends BaseClient {
    */
   async imageRef(): Promise<string> {
     if (this._imageRef) {
-      return this._imageRef
+      return this._imageRef;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1360,9 +1359,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1385,7 +1384,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1393,7 +1392,7 @@ export class Container extends BaseClient {
    */
   async label(name: string): Promise<string> {
     if (this._label) {
-      return this._label
+      return this._label;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1405,9 +1404,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1415,9 +1414,9 @@ export class Container extends BaseClient {
    */
   async labels(): Promise<Label[]> {
     type labels = {
-      name: string
-      value: string
-    }
+      name: string;
+      value: string;
+    };
 
     const response: Awaited<labels[]> = await computeQuery(
       [
@@ -1430,7 +1429,7 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -1443,7 +1442,7 @@ export class Container extends BaseClient {
           r.name,
           r.value
         )
-    )
+    );
   }
 
   /**
@@ -1458,9 +1457,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1480,7 +1479,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1488,7 +1487,7 @@ export class Container extends BaseClient {
    */
   async platform(): Promise<Platform> {
     if (this._platform) {
-      return this._platform
+      return this._platform;
     }
 
     const response: Awaited<Platform> = await computeQuery(
@@ -1499,9 +1498,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1525,13 +1524,13 @@ export class Container extends BaseClient {
    */
   async publish(address: string, opts?: ContainerPublishOpts): Promise<string> {
     if (this._publish) {
-      return this._publish
+      return this._publish;
     }
 
     const metadata: Metadata = {
       forcedCompression: { is_enum: true },
       mediaTypes: { is_enum: true },
-    }
+    };
 
     const response: Awaited<string> = await computeQuery(
       [
@@ -1542,9 +1541,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1560,7 +1559,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1571,7 +1570,7 @@ export class Container extends BaseClient {
    */
   async shellEndpoint(): Promise<string> {
     if (this._shellEndpoint) {
-      return this._shellEndpoint
+      return this._shellEndpoint;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1582,9 +1581,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1594,7 +1593,7 @@ export class Container extends BaseClient {
    */
   async stderr(): Promise<string> {
     if (this._stderr) {
-      return this._stderr
+      return this._stderr;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1605,9 +1604,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1617,7 +1616,7 @@ export class Container extends BaseClient {
    */
   async stdout(): Promise<string> {
     if (this._stdout) {
-      return this._stdout
+      return this._stdout;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1628,9 +1627,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1647,9 +1646,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return this
+    return this;
   }
 
   /**
@@ -1657,7 +1656,7 @@ export class Container extends BaseClient {
    */
   async user(): Promise<string> {
     if (this._user) {
-      return this._user
+      return this._user;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -1668,9 +1667,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -1688,7 +1687,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1718,7 +1717,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1736,7 +1735,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1761,7 +1760,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1793,7 +1792,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1812,7 +1811,7 @@ export class Container extends BaseClient {
   ): Container {
     const metadata: Metadata = {
       protocol: { is_enum: true },
-    }
+    };
 
     return new Container({
       queryTree: [
@@ -1824,7 +1823,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1855,7 +1854,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1872,7 +1871,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1891,7 +1890,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1917,7 +1916,7 @@ export class Container extends BaseClient {
   ): Container {
     const metadata: Metadata = {
       sharing: { is_enum: true },
-    }
+    };
 
     return new Container({
       queryTree: [
@@ -1929,7 +1928,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1957,7 +1956,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -1985,7 +1984,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2017,7 +2016,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2035,7 +2034,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2062,7 +2061,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2087,7 +2086,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2104,7 +2103,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2123,7 +2122,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2149,7 +2148,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2177,7 +2176,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2195,7 +2194,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2213,7 +2212,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2231,7 +2230,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2245,7 +2244,7 @@ export class Container extends BaseClient {
   ): Container {
     const metadata: Metadata = {
       protocol: { is_enum: true },
-    }
+    };
 
     return new Container({
       queryTree: [
@@ -2257,7 +2256,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2276,7 +2275,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2294,7 +2293,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2312,7 +2311,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2331,7 +2330,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2349,7 +2348,7 @@ export class Container extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2357,7 +2356,7 @@ export class Container extends BaseClient {
    */
   async workdir(): Promise<string> {
     if (this._workdir) {
-      return this._workdir
+      return this._workdir;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -2368,9 +2367,9 @@ export class Container extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2379,7 +2378,7 @@ export class Container extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: Container) => Container) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -2387,9 +2386,9 @@ export class Container extends BaseClient {
  * A directory.
  */
 export class Directory extends BaseClient {
-  private readonly _id?: DirectoryID = undefined
-  private readonly _export?: boolean = undefined
-  private readonly _sync?: DirectoryID = undefined
+  private readonly _id?: DirectoryID = undefined;
+  private readonly _export?: boolean = undefined;
+  private readonly _sync?: DirectoryID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -2400,11 +2399,11 @@ export class Directory extends BaseClient {
     _export?: boolean,
     _sync?: DirectoryID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._export = _export
-    this._sync = _sync
+    this._id = _id;
+    this._export = _export;
+    this._sync = _sync;
   }
 
   /**
@@ -2412,7 +2411,7 @@ export class Directory extends BaseClient {
    */
   async id(): Promise<DirectoryID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<DirectoryID> = await computeQuery(
@@ -2423,9 +2422,9 @@ export class Directory extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2452,7 +2451,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2470,7 +2469,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2488,7 +2487,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2514,7 +2513,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2531,9 +2530,9 @@ export class Directory extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2542,7 +2541,7 @@ export class Directory extends BaseClient {
    */
   async export(path: string): Promise<boolean> {
     if (this._export) {
-      return this._export
+      return this._export;
     }
 
     const response: Awaited<boolean> = await computeQuery(
@@ -2554,9 +2553,9 @@ export class Directory extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2574,7 +2573,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2591,9 +2590,9 @@ export class Directory extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2613,7 +2612,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2628,9 +2627,9 @@ export class Directory extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return this
+    return this;
   }
 
   /**
@@ -2655,7 +2654,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2681,7 +2680,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2705,7 +2704,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2731,7 +2730,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2751,7 +2750,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2769,7 +2768,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2787,7 +2786,7 @@ export class Directory extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -2796,7 +2795,7 @@ export class Directory extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: Directory) => Directory) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -2804,8 +2803,8 @@ export class Directory extends BaseClient {
  * A simple key value object that represents an environment variable.
  */
 export class EnvVariable extends BaseClient {
-  private readonly _name?: string = undefined
-  private readonly _value?: string = undefined
+  private readonly _name?: string = undefined;
+  private readonly _value?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -2815,10 +2814,10 @@ export class EnvVariable extends BaseClient {
     _name?: string,
     _value?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._name = _name
-    this._value = _value
+    this._name = _name;
+    this._value = _value;
   }
 
   /**
@@ -2826,7 +2825,7 @@ export class EnvVariable extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -2837,9 +2836,9 @@ export class EnvVariable extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2847,7 +2846,7 @@ export class EnvVariable extends BaseClient {
    */
   async value(): Promise<string> {
     if (this._value) {
-      return this._value
+      return this._value;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -2858,9 +2857,9 @@ export class EnvVariable extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -2870,8 +2869,8 @@ export class EnvVariable extends BaseClient {
  * object whose value is computed by invoking code (and can accept arguments).
  */
 export class FieldTypeDef extends BaseClient {
-  private readonly _description?: string = undefined
-  private readonly _name?: string = undefined
+  private readonly _description?: string = undefined;
+  private readonly _name?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -2881,10 +2880,10 @@ export class FieldTypeDef extends BaseClient {
     _description?: string,
     _name?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._description = _description
-    this._name = _name
+    this._description = _description;
+    this._name = _name;
   }
 
   /**
@@ -2892,7 +2891,7 @@ export class FieldTypeDef extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -2903,9 +2902,9 @@ export class FieldTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2913,7 +2912,7 @@ export class FieldTypeDef extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -2924,9 +2923,9 @@ export class FieldTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -2942,7 +2941,7 @@ export class FieldTypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
@@ -2950,11 +2949,11 @@ export class FieldTypeDef extends BaseClient {
  * A file.
  */
 export class File extends BaseClient {
-  private readonly _id?: FileID = undefined
-  private readonly _contents?: string = undefined
-  private readonly _export?: boolean = undefined
-  private readonly _size?: number = undefined
-  private readonly _sync?: FileID = undefined
+  private readonly _id?: FileID = undefined;
+  private readonly _contents?: string = undefined;
+  private readonly _export?: boolean = undefined;
+  private readonly _size?: number = undefined;
+  private readonly _sync?: FileID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -2967,13 +2966,13 @@ export class File extends BaseClient {
     _size?: number,
     _sync?: FileID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._contents = _contents
-    this._export = _export
-    this._size = _size
-    this._sync = _sync
+    this._id = _id;
+    this._contents = _contents;
+    this._export = _export;
+    this._size = _size;
+    this._sync = _sync;
   }
 
   /**
@@ -2981,7 +2980,7 @@ export class File extends BaseClient {
    */
   async id(): Promise<FileID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<FileID> = await computeQuery(
@@ -2992,9 +2991,9 @@ export class File extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3002,7 +3001,7 @@ export class File extends BaseClient {
    */
   async contents(): Promise<string> {
     if (this._contents) {
-      return this._contents
+      return this._contents;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3013,9 +3012,9 @@ export class File extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3026,7 +3025,7 @@ export class File extends BaseClient {
    */
   async export(path: string, opts?: FileExportOpts): Promise<boolean> {
     if (this._export) {
-      return this._export
+      return this._export;
     }
 
     const response: Awaited<boolean> = await computeQuery(
@@ -3038,9 +3037,9 @@ export class File extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3048,7 +3047,7 @@ export class File extends BaseClient {
    */
   async size(): Promise<number> {
     if (this._size) {
-      return this._size
+      return this._size;
     }
 
     const response: Awaited<number> = await computeQuery(
@@ -3059,9 +3058,9 @@ export class File extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3076,9 +3075,9 @@ export class File extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return this
+    return this;
   }
 
   /**
@@ -3098,7 +3097,7 @@ export class File extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3107,7 +3106,7 @@ export class File extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: File) => File) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -3118,9 +3117,9 @@ export class File extends BaseClient {
  * named arguments.
  */
 export class Function_ extends BaseClient {
-  private readonly _id?: FunctionID = undefined
-  private readonly _description?: string = undefined
-  private readonly _name?: string = undefined
+  private readonly _id?: FunctionID = undefined;
+  private readonly _description?: string = undefined;
+  private readonly _name?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3131,11 +3130,11 @@ export class Function_ extends BaseClient {
     _description?: string,
     _name?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._description = _description
-    this._name = _name
+    this._id = _id;
+    this._description = _description;
+    this._name = _name;
   }
 
   /**
@@ -3143,7 +3142,7 @@ export class Function_ extends BaseClient {
    */
   async id(): Promise<FunctionID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<FunctionID> = await computeQuery(
@@ -3154,9 +3153,9 @@ export class Function_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3164,8 +3163,8 @@ export class Function_ extends BaseClient {
    */
   async args(): Promise<FunctionArg[]> {
     type args = {
-      id: FunctionArgID
-    }
+      id: FunctionArgID;
+    };
 
     const response: Awaited<args[]> = await computeQuery(
       [
@@ -3178,7 +3177,7 @@ export class Function_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -3190,7 +3189,7 @@ export class Function_ extends BaseClient {
           },
           r.id
         )
-    )
+    );
   }
 
   /**
@@ -3198,7 +3197,7 @@ export class Function_ extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3209,9 +3208,9 @@ export class Function_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3219,7 +3218,7 @@ export class Function_ extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3230,9 +3229,9 @@ export class Function_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3248,7 +3247,7 @@ export class Function_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3273,7 +3272,7 @@ export class Function_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3290,7 +3289,7 @@ export class Function_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3299,7 +3298,7 @@ export class Function_ extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: Function_) => Function_) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -3310,10 +3309,10 @@ export class Function_ extends BaseClient {
  * argument passed at function call time.
  */
 export class FunctionArg extends BaseClient {
-  private readonly _id?: FunctionArgID = undefined
-  private readonly _defaultValue?: JSON = undefined
-  private readonly _description?: string = undefined
-  private readonly _name?: string = undefined
+  private readonly _id?: FunctionArgID = undefined;
+  private readonly _defaultValue?: JSON = undefined;
+  private readonly _description?: string = undefined;
+  private readonly _name?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3325,12 +3324,12 @@ export class FunctionArg extends BaseClient {
     _description?: string,
     _name?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._defaultValue = _defaultValue
-    this._description = _description
-    this._name = _name
+    this._id = _id;
+    this._defaultValue = _defaultValue;
+    this._description = _description;
+    this._name = _name;
   }
 
   /**
@@ -3338,7 +3337,7 @@ export class FunctionArg extends BaseClient {
    */
   async id(): Promise<FunctionArgID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<FunctionArgID> = await computeQuery(
@@ -3349,9 +3348,9 @@ export class FunctionArg extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3359,7 +3358,7 @@ export class FunctionArg extends BaseClient {
    */
   async defaultValue(): Promise<JSON> {
     if (this._defaultValue) {
-      return this._defaultValue
+      return this._defaultValue;
     }
 
     const response: Awaited<JSON> = await computeQuery(
@@ -3370,9 +3369,9 @@ export class FunctionArg extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3380,7 +3379,7 @@ export class FunctionArg extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3391,9 +3390,9 @@ export class FunctionArg extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3401,7 +3400,7 @@ export class FunctionArg extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3412,9 +3411,9 @@ export class FunctionArg extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3430,15 +3429,15 @@ export class FunctionArg extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
 export class FunctionCall extends BaseClient {
-  private readonly _name?: string = undefined
-  private readonly _parent?: JSON = undefined
-  private readonly _parentName?: string = undefined
-  private readonly _returnValue?: Void = undefined
+  private readonly _name?: string = undefined;
+  private readonly _parent?: JSON = undefined;
+  private readonly _parentName?: string = undefined;
+  private readonly _returnValue?: Void = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3450,12 +3449,12 @@ export class FunctionCall extends BaseClient {
     _parentName?: string,
     _returnValue?: Void
   ) {
-    super(parent)
+    super(parent);
 
-    this._name = _name
-    this._parent = _parent
-    this._parentName = _parentName
-    this._returnValue = _returnValue
+    this._name = _name;
+    this._parent = _parent;
+    this._parentName = _parentName;
+    this._returnValue = _returnValue;
   }
 
   /**
@@ -3463,9 +3462,9 @@ export class FunctionCall extends BaseClient {
    */
   async inputArgs(): Promise<FunctionCallArgValue[]> {
     type inputArgs = {
-      name: string
-      value: JSON
-    }
+      name: string;
+      value: JSON;
+    };
 
     const response: Awaited<inputArgs[]> = await computeQuery(
       [
@@ -3478,7 +3477,7 @@ export class FunctionCall extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -3491,7 +3490,7 @@ export class FunctionCall extends BaseClient {
           r.name,
           r.value
         )
-    )
+    );
   }
 
   /**
@@ -3499,7 +3498,7 @@ export class FunctionCall extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3510,9 +3509,9 @@ export class FunctionCall extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3521,7 +3520,7 @@ export class FunctionCall extends BaseClient {
    */
   async parent(): Promise<JSON> {
     if (this._parent) {
-      return this._parent
+      return this._parent;
     }
 
     const response: Awaited<JSON> = await computeQuery(
@@ -3532,9 +3531,9 @@ export class FunctionCall extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3543,7 +3542,7 @@ export class FunctionCall extends BaseClient {
    */
   async parentName(): Promise<string> {
     if (this._parentName) {
-      return this._parentName
+      return this._parentName;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3554,9 +3553,9 @@ export class FunctionCall extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3565,7 +3564,7 @@ export class FunctionCall extends BaseClient {
    */
   async returnValue(value: JSON): Promise<Void> {
     if (this._returnValue) {
-      return this._returnValue
+      return this._returnValue;
     }
 
     const response: Awaited<Void> = await computeQuery(
@@ -3577,15 +3576,15 @@ export class FunctionCall extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
 export class FunctionCallArgValue extends BaseClient {
-  private readonly _name?: string = undefined
-  private readonly _value?: JSON = undefined
+  private readonly _name?: string = undefined;
+  private readonly _value?: JSON = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3595,10 +3594,10 @@ export class FunctionCallArgValue extends BaseClient {
     _name?: string,
     _value?: JSON
   ) {
-    super(parent)
+    super(parent);
 
-    this._name = _name
-    this._value = _value
+    this._name = _name;
+    this._value = _value;
   }
 
   /**
@@ -3606,7 +3605,7 @@ export class FunctionCallArgValue extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3617,9 +3616,9 @@ export class FunctionCallArgValue extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3627,7 +3626,7 @@ export class FunctionCallArgValue extends BaseClient {
    */
   async value(): Promise<JSON> {
     if (this._value) {
-      return this._value
+      return this._value;
     }
 
     const response: Awaited<JSON> = await computeQuery(
@@ -3638,14 +3637,14 @@ export class FunctionCallArgValue extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
 export class GeneratedCode extends BaseClient {
-  private readonly _id?: GeneratedCodeID = undefined
+  private readonly _id?: GeneratedCodeID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3654,13 +3653,13 @@ export class GeneratedCode extends BaseClient {
     parent?: { queryTree?: QueryTree[]; host?: string; sessionToken?: string },
     _id?: GeneratedCodeID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
+    this._id = _id;
   }
   async id(): Promise<GeneratedCodeID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<GeneratedCodeID> = await computeQuery(
@@ -3671,9 +3670,9 @@ export class GeneratedCode extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3689,7 +3688,7 @@ export class GeneratedCode extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3704,9 +3703,9 @@ export class GeneratedCode extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3721,9 +3720,9 @@ export class GeneratedCode extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3740,7 +3739,7 @@ export class GeneratedCode extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3757,7 +3756,7 @@ export class GeneratedCode extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3766,7 +3765,7 @@ export class GeneratedCode extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: GeneratedCode) => GeneratedCode) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -3774,7 +3773,7 @@ export class GeneratedCode extends BaseClient {
  * A git ref (tag, branch or commit).
  */
 export class GitRef extends BaseClient {
-  private readonly _commit?: string = undefined
+  private readonly _commit?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -3783,9 +3782,9 @@ export class GitRef extends BaseClient {
     parent?: { queryTree?: QueryTree[]; host?: string; sessionToken?: string },
     _commit?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._commit = _commit
+    this._commit = _commit;
   }
 
   /**
@@ -3793,7 +3792,7 @@ export class GitRef extends BaseClient {
    */
   async commit(): Promise<string> {
     if (this._commit) {
-      return this._commit
+      return this._commit;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -3804,9 +3803,9 @@ export class GitRef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -3823,7 +3822,7 @@ export class GitRef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
@@ -3835,11 +3834,11 @@ export class GitRepository extends BaseClient {
    * Constructor is used for internal usage only, do not create object from it.
    */
   constructor(parent?: {
-    queryTree?: QueryTree[]
-    host?: string
-    sessionToken?: string
+    queryTree?: QueryTree[];
+    host?: string;
+    sessionToken?: string;
   }) {
-    super(parent)
+    super(parent);
   }
 
   /**
@@ -3857,7 +3856,7 @@ export class GitRepository extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3875,7 +3874,7 @@ export class GitRepository extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3893,7 +3892,7 @@ export class GitRepository extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
@@ -3905,11 +3904,11 @@ export class Host extends BaseClient {
    * Constructor is used for internal usage only, do not create object from it.
    */
   constructor(parent?: {
-    queryTree?: QueryTree[]
-    host?: string
-    sessionToken?: string
+    queryTree?: QueryTree[];
+    host?: string;
+    sessionToken?: string;
   }) {
-    super(parent)
+    super(parent);
   }
 
   /**
@@ -3929,7 +3928,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3947,7 +3946,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3971,7 +3970,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -3991,7 +3990,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4023,7 +4022,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4041,7 +4040,7 @@ export class Host extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
@@ -4049,8 +4048,8 @@ export class Host extends BaseClient {
  * A simple key value object that represents a label.
  */
 export class Label extends BaseClient {
-  private readonly _name?: string = undefined
-  private readonly _value?: string = undefined
+  private readonly _name?: string = undefined;
+  private readonly _value?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4060,10 +4059,10 @@ export class Label extends BaseClient {
     _name?: string,
     _value?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._name = _name
-    this._value = _value
+    this._name = _name;
+    this._value = _value;
   }
 
   /**
@@ -4071,7 +4070,7 @@ export class Label extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4082,9 +4081,9 @@ export class Label extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4092,7 +4091,7 @@ export class Label extends BaseClient {
    */
   async value(): Promise<string> {
     if (this._value) {
-      return this._value
+      return this._value;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4103,9 +4102,9 @@ export class Label extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -4117,11 +4116,11 @@ export class ListTypeDef extends BaseClient {
    * Constructor is used for internal usage only, do not create object from it.
    */
   constructor(parent?: {
-    queryTree?: QueryTree[]
-    host?: string
-    sessionToken?: string
+    queryTree?: QueryTree[];
+    host?: string;
+    sessionToken?: string;
   }) {
-    super(parent)
+    super(parent);
   }
 
   /**
@@ -4137,17 +4136,17 @@ export class ListTypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 }
 
 export class Module_ extends BaseClient {
-  private readonly _id?: ModuleID = undefined
-  private readonly _description?: string = undefined
-  private readonly _name?: string = undefined
-  private readonly _sdk?: string = undefined
-  private readonly _serve?: Void = undefined
-  private readonly _sourceDirectorySubPath?: string = undefined
+  private readonly _id?: ModuleID = undefined;
+  private readonly _description?: string = undefined;
+  private readonly _name?: string = undefined;
+  private readonly _sdk?: string = undefined;
+  private readonly _serve?: Void = undefined;
+  private readonly _sourceDirectorySubPath?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4161,14 +4160,14 @@ export class Module_ extends BaseClient {
     _serve?: Void,
     _sourceDirectorySubPath?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._description = _description
-    this._name = _name
-    this._sdk = _sdk
-    this._serve = _serve
-    this._sourceDirectorySubPath = _sourceDirectorySubPath
+    this._id = _id;
+    this._description = _description;
+    this._name = _name;
+    this._sdk = _sdk;
+    this._serve = _serve;
+    this._sourceDirectorySubPath = _sourceDirectorySubPath;
   }
 
   /**
@@ -4176,7 +4175,7 @@ export class Module_ extends BaseClient {
    */
   async id(): Promise<ModuleID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<ModuleID> = await computeQuery(
@@ -4187,9 +4186,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4197,8 +4196,8 @@ export class Module_ extends BaseClient {
    */
   async dependencies(): Promise<Module_[]> {
     type dependencies = {
-      id: ModuleID
-    }
+      id: ModuleID;
+    };
 
     const response: Awaited<dependencies[]> = await computeQuery(
       [
@@ -4211,7 +4210,7 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -4223,7 +4222,7 @@ export class Module_ extends BaseClient {
           },
           r.id
         )
-    )
+    );
   }
 
   /**
@@ -4238,9 +4237,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4248,7 +4247,7 @@ export class Module_ extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4259,9 +4258,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4277,7 +4276,7 @@ export class Module_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4285,7 +4284,7 @@ export class Module_ extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4296,9 +4295,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4306,8 +4305,8 @@ export class Module_ extends BaseClient {
    */
   async objects(): Promise<TypeDef[]> {
     type objects = {
-      id: TypeDefID
-    }
+      id: TypeDefID;
+    };
 
     const response: Awaited<objects[]> = await computeQuery(
       [
@@ -4320,7 +4319,7 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -4332,7 +4331,7 @@ export class Module_ extends BaseClient {
           },
           r.id
         )
-    )
+    );
   }
 
   /**
@@ -4340,7 +4339,7 @@ export class Module_ extends BaseClient {
    */
   async sdk(): Promise<string> {
     if (this._sdk) {
-      return this._sdk
+      return this._sdk;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4351,9 +4350,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4363,7 +4362,7 @@ export class Module_ extends BaseClient {
    */
   async serve(): Promise<Void> {
     if (this._serve) {
-      return this._serve
+      return this._serve;
     }
 
     const response: Awaited<Void> = await computeQuery(
@@ -4374,9 +4373,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4392,7 +4391,7 @@ export class Module_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4400,7 +4399,7 @@ export class Module_ extends BaseClient {
    */
   async sourceDirectorySubPath(): Promise<string> {
     if (this._sourceDirectorySubPath) {
-      return this._sourceDirectorySubPath
+      return this._sourceDirectorySubPath;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4411,9 +4410,9 @@ export class Module_ extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4430,7 +4429,7 @@ export class Module_ extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4439,7 +4438,7 @@ export class Module_ extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: Module_) => Module_) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -4447,9 +4446,9 @@ export class Module_ extends BaseClient {
  * Static configuration for a module (e.g. parsed contents of dagger.json)
  */
 export class ModuleConfig extends BaseClient {
-  private readonly _name?: string = undefined
-  private readonly _root?: string = undefined
-  private readonly _sdk?: string = undefined
+  private readonly _name?: string = undefined;
+  private readonly _root?: string = undefined;
+  private readonly _sdk?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4460,11 +4459,11 @@ export class ModuleConfig extends BaseClient {
     _root?: string,
     _sdk?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._name = _name
-    this._root = _root
-    this._sdk = _sdk
+    this._name = _name;
+    this._root = _root;
+    this._sdk = _sdk;
   }
 
   /**
@@ -4479,9 +4478,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4496,9 +4495,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4513,9 +4512,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4523,7 +4522,7 @@ export class ModuleConfig extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4534,9 +4533,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4544,7 +4543,7 @@ export class ModuleConfig extends BaseClient {
    */
   async root(): Promise<string> {
     if (this._root) {
-      return this._root
+      return this._root;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4555,9 +4554,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4565,7 +4564,7 @@ export class ModuleConfig extends BaseClient {
    */
   async sdk(): Promise<string> {
     if (this._sdk) {
-      return this._sdk
+      return this._sdk;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4576,9 +4575,9 @@ export class ModuleConfig extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -4586,8 +4585,8 @@ export class ModuleConfig extends BaseClient {
  * A definition of a custom object defined in a Module.
  */
 export class ObjectTypeDef extends BaseClient {
-  private readonly _description?: string = undefined
-  private readonly _name?: string = undefined
+  private readonly _description?: string = undefined;
+  private readonly _name?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4597,10 +4596,10 @@ export class ObjectTypeDef extends BaseClient {
     _description?: string,
     _name?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._description = _description
-    this._name = _name
+    this._description = _description;
+    this._name = _name;
   }
 
   /**
@@ -4608,7 +4607,7 @@ export class ObjectTypeDef extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4619,9 +4618,9 @@ export class ObjectTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4629,9 +4628,9 @@ export class ObjectTypeDef extends BaseClient {
    */
   async fields(): Promise<FieldTypeDef[]> {
     type fields = {
-      description: string
-      name: string
-    }
+      description: string;
+      name: string;
+    };
 
     const response: Awaited<fields[]> = await computeQuery(
       [
@@ -4644,7 +4643,7 @@ export class ObjectTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -4657,7 +4656,7 @@ export class ObjectTypeDef extends BaseClient {
           r.description,
           r.name
         )
-    )
+    );
   }
 
   /**
@@ -4665,8 +4664,8 @@ export class ObjectTypeDef extends BaseClient {
    */
   async functions(): Promise<Function_[]> {
     type functions = {
-      id: FunctionID
-    }
+      id: FunctionID;
+    };
 
     const response: Awaited<functions[]> = await computeQuery(
       [
@@ -4679,7 +4678,7 @@ export class ObjectTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -4691,7 +4690,7 @@ export class ObjectTypeDef extends BaseClient {
           },
           r.id
         )
-    )
+    );
   }
 
   /**
@@ -4699,7 +4698,7 @@ export class ObjectTypeDef extends BaseClient {
    */
   async name(): Promise<string> {
     if (this._name) {
-      return this._name
+      return this._name;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4710,9 +4709,9 @@ export class ObjectTypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -4720,9 +4719,9 @@ export class ObjectTypeDef extends BaseClient {
  * A port exposed by a container.
  */
 export class Port extends BaseClient {
-  private readonly _description?: string = undefined
-  private readonly _port?: number = undefined
-  private readonly _protocol?: NetworkProtocol = undefined
+  private readonly _description?: string = undefined;
+  private readonly _port?: number = undefined;
+  private readonly _protocol?: NetworkProtocol = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4733,11 +4732,11 @@ export class Port extends BaseClient {
     _port?: number,
     _protocol?: NetworkProtocol
   ) {
-    super(parent)
+    super(parent);
 
-    this._description = _description
-    this._port = _port
-    this._protocol = _protocol
+    this._description = _description;
+    this._port = _port;
+    this._protocol = _protocol;
   }
 
   /**
@@ -4745,7 +4744,7 @@ export class Port extends BaseClient {
    */
   async description(): Promise<string> {
     if (this._description) {
-      return this._description
+      return this._description;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -4756,9 +4755,9 @@ export class Port extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4766,7 +4765,7 @@ export class Port extends BaseClient {
    */
   async port(): Promise<number> {
     if (this._port) {
-      return this._port
+      return this._port;
     }
 
     const response: Awaited<number> = await computeQuery(
@@ -4777,9 +4776,9 @@ export class Port extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4787,7 +4786,7 @@ export class Port extends BaseClient {
    */
   async protocol(): Promise<NetworkProtocol> {
     if (this._protocol) {
-      return this._protocol
+      return this._protocol;
     }
 
     const response: Awaited<NetworkProtocol> = await computeQuery(
@@ -4798,15 +4797,15 @@ export class Port extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
 export class Client extends BaseClient {
-  private readonly _checkVersionCompatibility?: boolean = undefined
-  private readonly _defaultPlatform?: Platform = undefined
+  private readonly _checkVersionCompatibility?: boolean = undefined;
+  private readonly _defaultPlatform?: Platform = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -4816,10 +4815,10 @@ export class Client extends BaseClient {
     _checkVersionCompatibility?: boolean,
     _defaultPlatform?: Platform
   ) {
-    super(parent)
+    super(parent);
 
-    this._checkVersionCompatibility = _checkVersionCompatibility
-    this._defaultPlatform = _defaultPlatform
+    this._checkVersionCompatibility = _checkVersionCompatibility;
+    this._defaultPlatform = _defaultPlatform;
   }
 
   /**
@@ -4837,7 +4836,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4854,9 +4853,9 @@ export class Client extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4876,7 +4875,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4894,7 +4893,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4910,7 +4909,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4925,9 +4924,9 @@ export class Client extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -4944,7 +4943,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4962,7 +4961,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4979,7 +4978,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -4997,7 +4996,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5021,7 +5020,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5037,7 +5036,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5056,7 +5055,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5073,7 +5072,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5090,7 +5089,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5107,7 +5106,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5124,7 +5123,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5141,7 +5140,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5158,7 +5157,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5175,7 +5174,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5192,7 +5191,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5209,7 +5208,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5226,7 +5225,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5243,7 +5242,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5260,7 +5259,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5276,7 +5275,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5296,7 +5295,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5316,7 +5315,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5334,7 +5333,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5354,7 +5353,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5372,7 +5371,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5388,7 +5387,7 @@ export class Client extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5397,7 +5396,7 @@ export class Client extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: Client) => Client) {
-    return arg(this)
+    return arg(this);
   }
 }
 
@@ -5405,8 +5404,8 @@ export class Client extends BaseClient {
  * A reference to a secret value, which can be handled more safely than the value itself.
  */
 export class Secret extends BaseClient {
-  private readonly _id?: SecretID = undefined
-  private readonly _plaintext?: string = undefined
+  private readonly _id?: SecretID = undefined;
+  private readonly _plaintext?: string = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -5416,10 +5415,10 @@ export class Secret extends BaseClient {
     _id?: SecretID,
     _plaintext?: string
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._plaintext = _plaintext
+    this._id = _id;
+    this._plaintext = _plaintext;
   }
 
   /**
@@ -5427,7 +5426,7 @@ export class Secret extends BaseClient {
    */
   async id(): Promise<SecretID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<SecretID> = await computeQuery(
@@ -5438,9 +5437,9 @@ export class Secret extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5448,7 +5447,7 @@ export class Secret extends BaseClient {
    */
   async plaintext(): Promise<string> {
     if (this._plaintext) {
-      return this._plaintext
+      return this._plaintext;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -5459,18 +5458,18 @@ export class Secret extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
 export class Service extends BaseClient {
-  private readonly _id?: ServiceID = undefined
-  private readonly _endpoint?: string = undefined
-  private readonly _hostname?: string = undefined
-  private readonly _start?: ServiceID = undefined
-  private readonly _stop?: ServiceID = undefined
+  private readonly _id?: ServiceID = undefined;
+  private readonly _endpoint?: string = undefined;
+  private readonly _hostname?: string = undefined;
+  private readonly _start?: ServiceID = undefined;
+  private readonly _stop?: ServiceID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -5483,13 +5482,13 @@ export class Service extends BaseClient {
     _start?: ServiceID,
     _stop?: ServiceID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._endpoint = _endpoint
-    this._hostname = _hostname
-    this._start = _start
-    this._stop = _stop
+    this._id = _id;
+    this._endpoint = _endpoint;
+    this._hostname = _hostname;
+    this._start = _start;
+    this._stop = _stop;
   }
 
   /**
@@ -5497,7 +5496,7 @@ export class Service extends BaseClient {
    */
   async id(): Promise<ServiceID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<ServiceID> = await computeQuery(
@@ -5508,9 +5507,9 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5524,7 +5523,7 @@ export class Service extends BaseClient {
    */
   async endpoint(opts?: ServiceEndpointOpts): Promise<string> {
     if (this._endpoint) {
-      return this._endpoint
+      return this._endpoint;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -5536,9 +5535,9 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5546,7 +5545,7 @@ export class Service extends BaseClient {
    */
   async hostname(): Promise<string> {
     if (this._hostname) {
-      return this._hostname
+      return this._hostname;
     }
 
     const response: Awaited<string> = await computeQuery(
@@ -5557,9 +5556,9 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5567,10 +5566,10 @@ export class Service extends BaseClient {
    */
   async ports(): Promise<Port[]> {
     type ports = {
-      description: string
-      port: number
-      protocol: NetworkProtocol
-    }
+      description: string;
+      port: number;
+      protocol: NetworkProtocol;
+    };
 
     const response: Awaited<ports[]> = await computeQuery(
       [
@@ -5583,7 +5582,7 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
     return response.map(
       (r) =>
@@ -5597,7 +5596,7 @@ export class Service extends BaseClient {
           r.port,
           r.protocol
         )
-    )
+    );
   }
 
   /**
@@ -5614,9 +5613,9 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return this
+    return this;
   }
 
   /**
@@ -5631,14 +5630,14 @@ export class Service extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return this
+    return this;
   }
 }
 
 export class Socket extends BaseClient {
-  private readonly _id?: SocketID = undefined
+  private readonly _id?: SocketID = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -5647,9 +5646,9 @@ export class Socket extends BaseClient {
     parent?: { queryTree?: QueryTree[]; host?: string; sessionToken?: string },
     _id?: SocketID
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
+    this._id = _id;
   }
 
   /**
@@ -5657,7 +5656,7 @@ export class Socket extends BaseClient {
    */
   async id(): Promise<SocketID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<SocketID> = await computeQuery(
@@ -5668,9 +5667,9 @@ export class Socket extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 }
 
@@ -5678,9 +5677,9 @@ export class Socket extends BaseClient {
  * A definition of a parameter or return type in a Module.
  */
 export class TypeDef extends BaseClient {
-  private readonly _id?: TypeDefID = undefined
-  private readonly _kind?: TypeDefKind = undefined
-  private readonly _optional?: boolean = undefined
+  private readonly _id?: TypeDefID = undefined;
+  private readonly _kind?: TypeDefKind = undefined;
+  private readonly _optional?: boolean = undefined;
 
   /**
    * Constructor is used for internal usage only, do not create object from it.
@@ -5691,15 +5690,15 @@ export class TypeDef extends BaseClient {
     _kind?: TypeDefKind,
     _optional?: boolean
   ) {
-    super(parent)
+    super(parent);
 
-    this._id = _id
-    this._kind = _kind
-    this._optional = _optional
+    this._id = _id;
+    this._kind = _kind;
+    this._optional = _optional;
   }
   async id(): Promise<TypeDefID> {
     if (this._id) {
-      return this._id
+      return this._id;
     }
 
     const response: Awaited<TypeDefID> = await computeQuery(
@@ -5710,9 +5709,9 @@ export class TypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5729,7 +5728,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5746,7 +5745,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5754,7 +5753,7 @@ export class TypeDef extends BaseClient {
    */
   async kind(): Promise<TypeDefKind> {
     if (this._kind) {
-      return this._kind
+      return this._kind;
     }
 
     const response: Awaited<TypeDefKind> = await computeQuery(
@@ -5765,9 +5764,9 @@ export class TypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5775,7 +5774,7 @@ export class TypeDef extends BaseClient {
    */
   async optional(): Promise<boolean> {
     if (this._optional) {
-      return this._optional
+      return this._optional;
     }
 
     const response: Awaited<boolean> = await computeQuery(
@@ -5786,9 +5785,9 @@ export class TypeDef extends BaseClient {
         },
       ],
       this.client
-    )
+    );
 
-    return response
+    return response;
   }
 
   /**
@@ -5812,7 +5811,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5829,7 +5828,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5846,7 +5845,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5863,7 +5862,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5884,7 +5883,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5901,7 +5900,7 @@ export class TypeDef extends BaseClient {
       ],
       host: this.clientHost,
       sessionToken: this.sessionToken,
-    })
+    });
   }
 
   /**
@@ -5910,6 +5909,6 @@ export class TypeDef extends BaseClient {
    * This is useful for reusability and readability by not breaking the calling chain.
    */
   with(arg: (param: TypeDef) => TypeDef) {
-    return arg(this)
+    return arg(this);
   }
 }
