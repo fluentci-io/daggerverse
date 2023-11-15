@@ -31,7 +31,7 @@ func (m *DenoSdk) ModuleRuntime(modSource *Directory, opts RuntimeOpts) *Contain
 			"install",
 			"--reload",
 			"-A",
-			"https://raw.githubusercontent.com/tsirysndr/dagger/zenith-functions/sdk/deno/src/ext/cli.ts",
+			"https://raw.githubusercontent.com/fluentci-io/daggerverse/main/deno-sdk/sdk/src/mod/cli.ts",
 			"-n",
 			"runtime",
 		}).
