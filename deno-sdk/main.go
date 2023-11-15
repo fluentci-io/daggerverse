@@ -63,7 +63,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, opts RuntimeOpts) *GeneratedCode
 func (m *DenoSdk) CodegenBin(platform Platform) *File {
 	return m.denoBase(platform).
 		WithMountedDirectory("/sdk", dag.Host().Directory(".")).
-		File("/sdk/deno-runtime/codegen")
+		File("/sdk/codegen")
 }
 
 func (m *DenoSdk) Base(platform Platform) *Container {
