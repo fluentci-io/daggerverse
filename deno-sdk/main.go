@@ -65,10 +65,8 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 
 func (m *DenoSdk) CodegenBin() *File {
 	return m.goBase().
-		WithExec([]string{"git", "clone", "https://github.com/fluentci-io/codegen.git"}).
-		WithWorkdir("codegen").
-		WithExec([]string{"go", "build", "-o", "/usr/bin/codegen"}).
-		File("/usr/bin/codegen")
+		WithExec([]string{"go", "install", "github.com/fluentci-io/codegen@latest"}).
+		File("/go/bin/codegen")
 }
 
 func (m *DenoSdk) Base() *Container {
@@ -88,6 +86,5 @@ func (m *DenoSdk) denoBase() *Container {
 func (m *DenoSdk) goBase() *Container {
 	opts := ContainerOpts{}
 	return dag.Container(opts).
-		From("golang:1.21-alpine").
-		WithExec([]string{"apk", "add", "--no-cache", "git"})
+		From("golang:1.21-alpine")
 }
