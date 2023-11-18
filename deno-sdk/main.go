@@ -18,8 +18,11 @@ func (m *DenoSdk) ModuleRuntime(modSource *Directory, subPath string, introspect
 	return m.Base().
 		WithDirectory(ModSourceDirPath, modSource).
 		WithWorkdir(modSubPath).
+		WithNewFile(schemaPath, ContainerWithNewFileOpts{
+			Contents: introspectionJson,
+		}).
 		WithExec([]string{"sh", "-c", "ls -lha"}).
-		WithExec([]string{"sh", "-c", "codegen --module . --lang nodejs"}, ContainerWithExecOpts{
+		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
 		}).
 		WithExec([]string{
@@ -46,7 +49,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 		})
 
 	codegen := base.
-		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang nodejs --introspection-json-path /schema.json"}, ContainerWithExecOpts{
+		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
 		}).
 		Directory(".")
@@ -56,6 +59,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 			"dagger.gen.go",
 			"internal/querybuilder/",
 			"querybuilder/", // for old repos
+			".fluentci/",
 		})
 }
 
