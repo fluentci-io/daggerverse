@@ -1,4 +1,7 @@
 {
   "name": "basic",
-  "sdk": "github.com/fluentci-io/daggerverse/deno-sdk@main"
+  "sdk": "github.com/fluentci-io/daggerverse/deno-sdk@main",
+  "dependencies": [
+    "github.com/fluent-ci-templates/base-pipeline@a0dc7ada01b8b045cf4a00fb288450ef56d27843"
+  ]
 }

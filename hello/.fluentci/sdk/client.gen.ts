@@ -883,6 +883,42 @@ export type __TypeFieldsOpts = {
 
 
 
+export class Base extends BaseClient {
+  private readonly _hello?: string = undefined
+
+  /**
+   * Constructor is used for internal usage only, do not create object from it.
+   */
+   constructor(
+    parent?: { queryTree?: QueryTree[], host?: string, sessionToken?: string },
+     _hello?: string,
+   ) {
+     super(parent)
+
+     this._hello = _hello
+   }
+  async hello(src: string): Promise<string> {
+    if (this._hello) {
+      return this._hello
+    }
+
+    const response: Awaited<string> = await computeQuery(
+      [
+        ...this._queryTree,
+        {
+          operation: "hello",
+          args: { src },
+        },
+      ],
+      this.client
+    )
+
+    
+    return response
+  }
+}
+
+
 
 
 
@@ -4878,6 +4914,18 @@ export class Client extends BaseClient {
      this._checkVersionCompatibility = _checkVersionCompatibility
      this._defaultPlatform = _defaultPlatform
    }
+  base(): Base {
+    return new Base({
+      queryTree: [
+        ...this._queryTree,
+        {
+          operation: "base",
+        },
+      ],
+      host: this.clientHost,
+      sessionToken: this.sessionToken,
+    })
+  }
 
   /**
    * Constructs a cache volume for a given cache key.
