@@ -44,6 +44,19 @@ export async function connect(
   let client: Client;
   // let close: null | (() => void) = null;
 
+  if (Deno.env.has("FLUENTCI_TOKEN") && Deno.env.has("FLUENTCI_SESSION_ID")) {
+    const client = new Client({
+      host: Deno.env.get("FLUENTCI_HOST") || "vm.fluentci.io",
+      sessionToken: Deno.env.get("FLUENTCI_TOKEN"),
+    });
+    await cb(client).finally(() => {
+      if (close) {
+        close();
+      }
+    });
+    return;
+  }
+
   // Prefer DAGGER_SESSION_PORT if set
   const daggerSessionPort = Deno.env.get("DAGGER_SESSION_PORT");
   if (daggerSessionPort) {
@@ -68,7 +81,7 @@ export async function connect(
     throw new Error("DAGGER_SESSION_PORT must be set");
   }
 
-  await cb(client).finally(async () => {
+  await cb(client).finally(() => {
     if (close) {
       close();
     }

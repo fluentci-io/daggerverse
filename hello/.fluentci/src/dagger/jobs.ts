@@ -1,4 +1,5 @@
-import Client, { connect } from "../../deps.ts";
+import Client from "../../deps.ts";
+import { connect } from "../../sdk/connect.ts";
 
 export enum Job {
   hello = "hello",
@@ -17,7 +18,7 @@ export const hello = async (src = ".") => {
       .from("alpine")
       .withDirectory("/app", context)
       .withWorkdir("/app")
-      .withExec(["echo", `'Hello, world! ${answer}'`]);
+      .withExec(["echo", `'Hello, world!' ${answer}`]);
 
     result = await ctr.stdout();
   });
