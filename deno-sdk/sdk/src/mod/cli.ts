@@ -118,7 +118,10 @@ function register(client: Client, functionName: any, objDef: TypeDef) {
   );
 
   for (const arg of argsType) {
-    fn = fn.withArg(arg.name, client.typeDef().withKind(typeMap[arg.type]));
+    fn = fn.withArg(
+      arg.name,
+      client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
+    );
   }
 
   return objDef.withFunction(fn);

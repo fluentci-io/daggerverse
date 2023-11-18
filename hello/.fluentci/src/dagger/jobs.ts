@@ -11,7 +11,7 @@ export const hello = async (src = ".") => {
   let result = "";
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
-    const answer = await client.base().hello(".");
+    const answer = await client.base().hello();
     const ctr = client
       .pipeline("hello")
       .container()

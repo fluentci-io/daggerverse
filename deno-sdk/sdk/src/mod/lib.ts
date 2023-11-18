@@ -13,13 +13,17 @@ export function getReturnType(schema: any, queryName: string) {
 export function getArgsType(
   schema: any,
   queryName: string
-): { name: string; type: string }[] {
+): { name: string; type: string; optional: boolean }[] {
   const queryType = schema.getQueryType();
   const queryField = queryType?.getFields()[queryName];
   return queryField?.args.map((arg: any) => {
     const argType =
       (arg.type as GraphQLScalarType).name ||
       (arg.type as GraphQLNonNull<GraphQLScalarType>).ofType?.name;
-    return { name: arg.name, type: argType };
+    return {
+      name: arg.name,
+      type: argType,
+      optional: !(arg.type instanceof GraphQLNonNull),
+    };
   });
 }

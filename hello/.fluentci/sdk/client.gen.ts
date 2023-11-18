@@ -61,6 +61,10 @@ class BaseClient {
   }
 }
 
+export type BaseHelloOpts = {
+  src?: string
+}
+
 export type BuildArg = {
   /**
    * The build argument name.
@@ -897,7 +901,7 @@ export class Base extends BaseClient {
 
      this._hello = _hello
    }
-  async hello(src: string): Promise<string> {
+  async hello(opts?: BaseHelloOpts): Promise<string> {
     if (this._hello) {
       return this._hello
     }
@@ -907,7 +911,7 @@ export class Base extends BaseClient {
         ...this._queryTree,
         {
           operation: "hello",
-          args: { src },
+          args: { ...opts },
         },
       ],
       this.client
