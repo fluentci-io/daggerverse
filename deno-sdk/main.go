@@ -10,16 +10,12 @@ type DenoSdk struct{}
 const (
 	ModSourceDirPath      = "/src"
 	RuntimeExecutablePath = "/usr/local/bin/runtime"
+	schemaPath            = "/schema.json"
 )
 
-type RuntimeOpts struct {
-	SubPath  string   `doc:"Sub-path of the source directory that contains the module config."`
-	Platform Platform `doc:"Platform to build for."`
-}
-
-func (m *DenoSdk) ModuleRuntime(modSource *Directory, opts RuntimeOpts) *Container {
-	modSubPath := filepath.Join(ModSourceDirPath, opts.SubPath)
-	return m.Base(opts.Platform).
+func (m *DenoSdk) ModuleRuntime(modSource *Directory, subPath string, introspectionJson string) *Container {
+	modSubPath := filepath.Join(ModSourceDirPath, subPath)
+	return m.Base().
 		WithDirectory(ModSourceDirPath, modSource).
 		WithWorkdir(modSubPath).
 		WithExec([]string{"sh", "-c", "ls -lha"}).
@@ -41,13 +37,16 @@ func (m *DenoSdk) ModuleRuntime(modSource *Directory, opts RuntimeOpts) *Contain
 		WithLabel("io.dagger.module.config", modSubPath)
 }
 
-func (m *DenoSdk) Codegen(modSource *Directory, opts RuntimeOpts) *GeneratedCode {
-	base := m.Base(opts.Platform).
+func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJson string) *GeneratedCode {
+	base := m.Base().
 		WithMountedDirectory(ModSourceDirPath, modSource).
-		WithWorkdir(path.Join(ModSourceDirPath, opts.SubPath))
+		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
+		WithNewFile(schemaPath, ContainerWithNewFileOpts{
+			Contents: introspectionJson,
+		})
 
 	codegen := base.
-		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang nodejs"}, ContainerWithExecOpts{
+		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang nodejs --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
 		}).
 		Directory(".")
@@ -60,26 +59,31 @@ func (m *DenoSdk) Codegen(modSource *Directory, opts RuntimeOpts) *GeneratedCode
 		})
 }
 
-func (m *DenoSdk) CodegenBin(platform Platform) *File {
-	return m.denoBase(platform).
-		WithMountedDirectory("/sdk", dag.Host().Directory(".")).
-		WithExec([]string{"ls", "-lha", "/sdk"}).
-		File("/sdk/codegen")
+func (m *DenoSdk) CodegenBin() *File {
+	return m.goBase().
+		WithExec([]string{"git", "clone", "https://github.com/fluentci-io/codegen.git"}).
+		WithWorkdir("codegen").
+		WithExec([]string{"go", "build", "-o", "/usr/bin/codegen"}).
+		File("/usr/bin/codegen")
 }
 
-func (m *DenoSdk) Base(platform Platform) *Container {
-	return m.denoBase(platform).
+func (m *DenoSdk) Base() *Container {
+	return m.denoBase().
 		WithDirectory("/sdk", dag.Host().Directory(".")).
-		WithFile("/usr/bin/codegen", m.CodegenBin(platform))
+		WithFile("/usr/bin/codegen", m.CodegenBin())
 }
 
-func (m *DenoSdk) denoBase(platform Platform) *Container {
+func (m *DenoSdk) denoBase() *Container {
 	opts := ContainerOpts{}
-	if platform != "" {
-		opts.Platform = platform
-	}
 	return dag.Container(opts).
 		From("denoland/deno:alpine-1.37.0").
 		WithExec([]string{"apk", "add", "--no-cache", "git"}).
 		WithMountedCache("/deno-dir", dag.CacheVolume("moddenocache"))
+}
+
+func (m *DenoSdk) goBase() *Container {
+	opts := ContainerOpts{}
+	return dag.Container(opts).
+		From("golang:1.21-alpine").
+		WithExec([]string{"apk", "add", "--no-cache", "git"})
 }
