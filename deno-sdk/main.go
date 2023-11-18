@@ -54,13 +54,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 		}).
 		Directory(".")
 
-	return dag.GeneratedCode(base.Directory(".").Diff(codegen)).
-		WithVCSIgnoredPaths([]string{
-			"dagger.gen.go",
-			"internal/querybuilder/",
-			"querybuilder/", // for old repos
-			".fluentci/",
-		})
+	return dag.GeneratedCode(codegen)
 }
 
 func (m *DenoSdk) CodegenBin() *File {
