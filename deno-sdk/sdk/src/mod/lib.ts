@@ -27,3 +27,14 @@ export function getArgsType(
     };
   });
 }
+
+export function parseSchemaDescription(schema: { description?: string }) {
+  if (schema.description) {
+    try {
+      return JSON.parse(schema.description);
+    } catch (_e) {
+      return {};
+    }
+  }
+  return {};
+}

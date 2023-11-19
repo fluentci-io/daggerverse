@@ -4,7 +4,7 @@ import fs from "node:fs";
 import { Client, TypeDef, TypeDefKind } from "../client.ts";
 import { connect } from "../connect.ts";
 import { execute } from "../../deps.ts";
-import { getArgsType, getReturnType } from "./lib.ts";
+import { getArgsType, getReturnType, parseSchemaDescription } from "./lib.ts";
 
 let moduleEntrypoint = "file:///src/mod.ts";
 
@@ -118,6 +118,14 @@ function register(client: Client, functionName: any, objDef: TypeDef) {
   );
 
   for (const arg of argsType) {
+    const desc = parseSchemaDescription(schema);
+    if (desc[`${functionName}.${arg.name}`] === "directory") {
+      fn = fn.withArg(
+        arg.name,
+        client.typeDef().withObject("Directory").withOptional(arg.optional)
+      );
+      continue;
+    }
     fn = fn.withArg(
       arg.name,
       client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
