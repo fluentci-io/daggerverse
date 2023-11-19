@@ -30,7 +30,7 @@ func (m *DenoSdk) ModuleRuntime(modSource *Directory, subPath string, introspect
 			"install",
 			"--reload",
 			"-A",
-			"https://cdn.jsdelivr.net/gh/fluentci-io/daggerverse@6e683f7/deno-sdk/sdk/src/mod/cli.ts",
+			"https://cdn.jsdelivr.net/gh/fluentci-io/daggerverse@dfcd7c1/deno-sdk/sdk/src/mod/cli.ts",
 			"-n",
 			"runtime",
 		}).
