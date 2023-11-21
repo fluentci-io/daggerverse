@@ -44,6 +44,13 @@ const typeMap: Record<string, TypeDefKind> = {
   Void: TypeDefKind.Voidkind,
 };
 
+const ObjectMap: Record<string, string> = {
+  file: "File",
+  directory: "Directory",
+  container: "Container",
+  secret: "Secret",
+};
+
 export function main() {
   connect(async (client: Client) => {
     const fnCall = client.currentFunctionCall();
@@ -111,21 +118,31 @@ function parseArg(value: any, type: string) {
 function register(client: Client, functionName: any, objDef: TypeDef) {
   const returnType = getReturnType(schema, functionName);
   const argsType = getArgsType(schema, functionName);
+  const desc = parseSchemaDescription(schema);
+  const objectReturnType = ObjectMap[desc[functionName]];
 
   let fn = client.function_(
     functionName,
     client.typeDef().withKind(typeMap[returnType])
   );
 
+  if (objectReturnType) {
+    fn = client.function_(
+      functionName,
+      client.typeDef().withObject(objectReturnType)
+    );
+  }
+
   for (const arg of argsType) {
-    const desc = parseSchemaDescription(schema);
-    if (desc[`${functionName}.${arg.name}`] === "directory") {
+    const objectType = ObjectMap[desc[`${functionName}.${arg.name}`]];
+    if (objectType) {
       fn = fn.withArg(
         arg.name,
-        client.typeDef().withObject("Directory").withOptional(arg.optional)
+        client.typeDef().withObject(objectType).withOptional(arg.optional)
       );
       continue;
     }
+
     fn = fn.withArg(
       arg.name,
       client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
