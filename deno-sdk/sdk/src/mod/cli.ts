@@ -44,6 +44,12 @@ const typeMap: Record<string, TypeDefKind> = {
   Void: TypeDefKind.Voidkind,
 };
 
+const listTypeMap: Record<string, TypeDefKind> = {
+  "[String]": TypeDefKind.Stringkind,
+  "[Int]": TypeDefKind.Integerkind,
+  "[Boolean]": TypeDefKind.Booleankind,
+};
+
 const ObjectMap: Record<string, string> = {
   file: "File",
   directory: "Directory",
@@ -139,6 +145,17 @@ function register(client: Client, functionName: any, objDef: TypeDef) {
       fn = fn.withArg(
         arg.name,
         client.typeDef().withObject(objectType).withOptional(arg.optional)
+      );
+      continue;
+    }
+
+    if (listTypeMap[arg.type]) {
+      fn = fn.withArg(
+        arg.name,
+        client
+          .typeDef()
+          .withListOf(client.typeDef().withKind(listTypeMap[arg.type]))
+          .withOptional(arg.optional)
       );
       continue;
     }

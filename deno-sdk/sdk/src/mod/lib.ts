@@ -22,7 +22,7 @@ export function getArgsType(
       (arg.type as GraphQLNonNull<GraphQLScalarType>).ofType?.name;
     return {
       name: arg.name,
-      type: argType,
+      type: argType || arg.type.toString().replace(/!/g, ""),
       optional: !(arg.type instanceof GraphQLNonNull),
     };
   });
