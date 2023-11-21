@@ -116,6 +116,12 @@ function parseArg(value: any, type: string) {
       return parseInt(value);
     case "Boolean":
       return /^\s*(true|1|on)\s*$/i.test(value);
+    case "[String]":
+      return JSON.parse(value);
+    case "[Int]":
+      return JSON.parse(value);
+    case "[Boolean]":
+      return JSON.parse(value);
     default:
       return value;
   }
