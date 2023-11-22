@@ -75,7 +75,11 @@ export function main() {
           client,
           key,
           objDef,
-          _.get(module, `jobDescriptions.${key}`, "")
+          _.get(
+            module,
+            `jobDescriptions.${key}`,
+            _.get(module, `jobDescriptions.${_.snakeCase(key)}`, "")
+          )
         );
       }
 
