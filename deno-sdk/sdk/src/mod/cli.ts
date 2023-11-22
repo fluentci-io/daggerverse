@@ -144,9 +144,10 @@ function register(
   const desc = parseSchemaDescription(schema);
   const objectReturnType = ObjectMap[desc[functionName]];
 
-  let fn = client
-    .function_(functionName, client.typeDef().withKind(typeMap[returnType]))
-    .withDescription(fnDesc);
+  let fn = client.function_(
+    functionName,
+    client.typeDef().withKind(typeMap[returnType])
+  );
 
   if (objectReturnType) {
     fn = client.function_(
@@ -181,6 +182,8 @@ function register(
       client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
     );
   }
+
+  fn = fn.withDescription(fnDesc);
 
   return objDef.withFunction(fn);
 }
