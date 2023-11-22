@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 import { Client, TypeDef, TypeDefKind } from "../client.ts";
 import { connect } from "../connect.ts";
-import { execute } from "../../deps.ts";
+import { execute, _ } from "../../deps.ts";
 import { getArgsType, getReturnType, parseSchemaDescription } from "./lib.ts";
 
 let moduleEntrypoint = "file:///src/mod.ts";
@@ -34,7 +34,8 @@ const resolvers = Object.keys(module).filter(
     key !== "schema" &&
     key !== "queries" &&
     key !== "pipeline" &&
-    key !== "exclude"
+    key !== "exclude" &&
+    key !== "jobDescriptions"
 );
 
 const typeMap: Record<string, TypeDefKind> = {
@@ -70,7 +71,12 @@ export function main() {
       let objDef = client.typeDef().withObject(moduleName);
 
       for (const key of resolvers) {
-        objDef = register(client, key, objDef);
+        objDef = register(
+          client,
+          key,
+          objDef,
+          _.get(module, `jobDescriptions.${key}`, "")
+        );
       }
 
       mod = mod.withObject(objDef);
@@ -127,7 +133,12 @@ function parseArg(value: any, type: string) {
   }
 }
 
-function register(client: Client, functionName: any, objDef: TypeDef) {
+function register(
+  client: Client,
+  functionName: any,
+  objDef: TypeDef,
+  fnDesc: string
+) {
   const returnType = getReturnType(schema, functionName);
   const argsType = getArgsType(schema, functionName);
   const desc = parseSchemaDescription(schema);
@@ -171,6 +182,8 @@ function register(client: Client, functionName: any, objDef: TypeDef) {
       client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
     );
   }
+
+  fn.withDescription(fnDesc);
 
   return objDef.withFunction(fn);
 }

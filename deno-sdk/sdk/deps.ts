@@ -21,3 +21,4 @@ export {
 export { execute } from "npm:graphql";
 
 export { GraphQLNonNull, GraphQLScalarType } from "npm:graphql";
+export * as _ from "https://cdn.skypack.dev/lodash";
