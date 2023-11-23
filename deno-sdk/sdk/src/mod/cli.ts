@@ -58,6 +58,17 @@ const ObjectMap: Record<string, string> = {
   secret: "Secret",
 };
 
+const functionDescription = (key: string) =>
+  _.get(
+    module,
+    `jobDescriptions.${key}`,
+    _.get(
+      module,
+      `jobDescriptions.${_.snakeCase(key)}`,
+      _.get(module, `jobDescriptions.${_.kebabCase(key)}`, "")
+    )
+  );
+
 export function main() {
   connect(async (client: Client) => {
     const fnCall = client.currentFunctionCall();
@@ -71,16 +82,7 @@ export function main() {
       let objDef = client.typeDef().withObject(moduleName);
 
       for (const key of resolvers) {
-        objDef = register(
-          client,
-          key,
-          objDef,
-          _.get(
-            module,
-            `jobDescriptions.${key}`,
-            _.get(module, `jobDescriptions.${_.snakeCase(key)}`, "")
-          )
-        );
+        objDef = register(client, key, objDef, functionDescription(key));
       }
 
       mod = mod.withObject(objDef);
