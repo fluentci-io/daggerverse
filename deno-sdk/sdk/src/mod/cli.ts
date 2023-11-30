@@ -80,7 +80,7 @@ export function main() {
         variableValues.push(
           parseArg(
             argValue,
-            argsType.find((a) => a.name === argName)?.type || "String"
+            argsType.find((a) => a.name === argName)?.type || "string"
           )
         );
       }
@@ -98,20 +98,20 @@ export function main() {
 
 function parseArg(value: any, type: string) {
   switch (type) {
-    case "String":
-      return value.replace(/"/g, "");
-    case "Int":
+    case "string":
+      return value;
+    case "number":
       return parseInt(value);
-    case "Boolean":
+    case "boolean":
       return /^\s*(true|1|on)\s*$/i.test(value);
-    case "[String]":
+    case "string[]":
       return JSON.parse(value);
-    case "[Int]":
+    case "number[]":
       return JSON.parse(value);
-    case "[Boolean]":
+    case "boolean[]":
       return JSON.parse(value);
     default:
-      return value;
+      return value.replace(/"/g, "");
   }
 }
 
