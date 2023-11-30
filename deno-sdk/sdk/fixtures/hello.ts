@@ -3,7 +3,7 @@ import { Container } from "../src/client.ts";
 /**
  * @function
  * @description Returns "Hello {name}"
- * @param a {string}
+ * @param {string} a
  * @returns {string}
  */
 export function hello(name?: string): string {
@@ -13,8 +13,8 @@ export function hello(name?: string): string {
 /**
  * @function
  * @description Returns x + y
- * @param x {number}
- * @param y {number}
+ * @param {number} x
+ * @param {number} y
  * @returns {number}
  */
 export function add(x: number, y: number): number {
@@ -24,7 +24,7 @@ export function add(x: number, y: number): number {
 /**
  * @function
  * @description Returns string joined by ','
- * @param a {string[]}
+ * @param {string[]} a
  * @returns {string}
  */
 export function join(a: string[]): string {
@@ -34,7 +34,7 @@ export function join(a: string[]): string {
 /**
  * @function
  * @description function example with Container as parameter
- * @param _c {Container}
+ * @param {Container} _c
  * @returns {void}
  */
 export function container(_c: Container) {}
@@ -42,7 +42,7 @@ export function container(_c: Container) {}
 /**
  * @function
  * @description Returns "Hello {name}"
- * @param a {string}
+ * @param {string} a
  * @returns {string}
  */
 export function greet(name = "World"): string {
