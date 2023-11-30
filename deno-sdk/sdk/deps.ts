@@ -18,7 +18,8 @@ export {
   ERROR_CODES,
 } from "https://esm.sh/@dagger.io/dagger@0.9.3";
 
-export { execute } from "npm:graphql";
-
-export { GraphQLNonNull, GraphQLScalarType } from "npm:graphql";
 export * as _ from "https://cdn.skypack.dev/lodash";
+import ts from "npm:typescript";
+export { ts };
+export { assert } from "https://deno.land/std@0.205.0/assert/assert.ts";
+export { assertEquals } from "https://deno.land/std@0.129.0/testing/asserts.ts";

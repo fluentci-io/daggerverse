@@ -20,3 +20,4 @@ export {
 } from "./deps.ts";
 export { connect } from "./src/connect.ts";
 export type { CallbackFct } from "./src/connect.ts";
+export { func, object } from "./src/decorators.ts";

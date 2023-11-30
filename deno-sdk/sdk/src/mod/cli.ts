@@ -3,8 +3,15 @@ import fs from "node:fs";
 
 import { Client, TypeDef, TypeDefKind } from "../client.ts";
 import { connect } from "../connect.ts";
-import { execute, _ } from "../../deps.ts";
-import { getArgsType, getReturnType, parseSchemaDescription } from "./lib.ts";
+import { _ } from "../../deps.ts";
+import {
+  getArgsType,
+  getReturnType,
+  getObjectReturnType,
+  getObjectArgType,
+} from "./lib.ts";
+import invoke from "./invoke.ts";
+import introspect from "./introspect.ts";
 
 let moduleEntrypoint = "file:///src/mod.ts";
 
@@ -13,61 +20,28 @@ if (fs.existsSync("/src/.fluentci/mod.ts")) {
 }
 
 const module = await import(moduleEntrypoint);
+const metadata = introspect(moduleEntrypoint);
+const functions = metadata.map((m) => m.functionName);
 
 if (!module) {
   throw new Error("Module not found");
 }
 
-const { schema, queries } = module;
-
-if (!schema) {
-  throw new Error("Schema not found");
-}
-
-if (!queries) {
-  throw new Error("Queries not found");
-}
-
-const resolvers = Object.keys(module).filter(
-  (key) =>
-    key !== "default" &&
-    key !== "schema" &&
-    key !== "queries" &&
-    key !== "pipeline" &&
-    key !== "exclude" &&
-    key !== "jobDescriptions"
-);
-
 const typeMap: Record<string, TypeDefKind> = {
-  String: TypeDefKind.Stringkind,
-  Int: TypeDefKind.Integerkind,
-  Boolean: TypeDefKind.Booleankind,
-  Void: TypeDefKind.Voidkind,
+  string: TypeDefKind.Stringkind,
+  number: TypeDefKind.Integerkind,
+  boolean: TypeDefKind.Booleankind,
+  void: TypeDefKind.Voidkind,
 };
 
 const listTypeMap: Record<string, TypeDefKind> = {
-  "[String]": TypeDefKind.Stringkind,
-  "[Int]": TypeDefKind.Integerkind,
-  "[Boolean]": TypeDefKind.Booleankind,
-};
-
-const ObjectMap: Record<string, string> = {
-  file: "File",
-  directory: "Directory",
-  container: "Container",
-  secret: "Secret",
+  "string[]": TypeDefKind.Stringkind,
+  "number[]": TypeDefKind.Integerkind,
+  "boolean[]": TypeDefKind.Booleankind,
 };
 
 const functionDescription = (key: string) =>
-  _.get(
-    module,
-    `jobDescriptions.${key}`,
-    _.get(
-      module,
-      `jobDescriptions.${_.snakeCase(key)}`,
-      _.get(module, `jobDescriptions.${_.kebabCase(key)}`, "")
-    )
-  );
+  metadata.find((m) => m.functionName === key)?.doc || "";
 
 export function main() {
   connect(async (client: Client) => {
@@ -81,7 +55,7 @@ export function main() {
       const moduleName = await mod.name();
       let objDef = client.typeDef().withObject(moduleName);
 
-      for (const key of resolvers) {
+      for (const key of functions) {
         objDef = register(client, key, objDef, functionDescription(key));
       }
 
@@ -92,28 +66,26 @@ export function main() {
       const args = await fnCall.inputArgs();
       console.log("function call name => ", name);
 
-      const argsType = getArgsType(schema, name);
-      const variableValues: Record<string, any> = {};
+      const argsType = getArgsType(metadata, name);
+      const variableValues: any[] = [];
       for (const arg of args) {
         const argName = await arg.name();
         const argValue = await arg.value();
         console.log("args => ", argName, argValue, typeof argValue);
 
-        variableValues[argName] = parseArg(
-          argValue,
-          argsType.find((a) => a.name === argName)?.type || "String"
+        variableValues.push(
+          parseArg(
+            argValue,
+            argsType.find((a) => a.name === argName)?.type || "String"
+          )
         );
       }
 
-      const result = await execute({
-        schema,
-        document: queries[name],
-        variableValues,
-      });
+      const result = invoke(module[name], ...variableValues);
 
       console.log("=> result", result);
 
-      returnValue = `"${result.data?.[name]}"`;
+      returnValue = `"${result}"`;
     }
 
     await fnCall.returnValue(returnValue as any);
@@ -145,25 +117,19 @@ function register(
   objDef: TypeDef,
   fnDesc: string
 ) {
-  const returnType = getReturnType(schema, functionName);
-  const argsType = getArgsType(schema, functionName);
-  const desc = parseSchemaDescription(schema);
-  const objectReturnType = ObjectMap[desc[functionName]];
+  const returnType = getReturnType(metadata, functionName);
+  const argsType = getArgsType(metadata, functionName);
+  const objectReturnType = getObjectReturnType(metadata, functionName);
 
   let fn = client.function_(
     functionName,
-    client.typeDef().withKind(typeMap[returnType])
+    objectReturnType
+      ? client.typeDef().withObject(objectReturnType)
+      : client.typeDef().withKind(typeMap[returnType!])
   );
 
-  if (objectReturnType) {
-    fn = client.function_(
-      functionName,
-      client.typeDef().withObject(objectReturnType)
-    );
-  }
-
   for (const arg of argsType) {
-    const objectType = ObjectMap[desc[`${functionName}.${arg.name}`]];
+    const objectType = getObjectArgType(metadata, functionName, arg.name);
     if (objectType) {
       fn = fn.withArg(
         arg.name,
