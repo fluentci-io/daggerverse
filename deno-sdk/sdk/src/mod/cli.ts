@@ -27,6 +27,10 @@ if (!module) {
   throw new Error("Module not found");
 }
 
+if (!metadata.length) {
+  throw new Error("No exported module function found");
+}
+
 const typeMap: Record<string, TypeDefKind> = {
   string: TypeDefKind.Stringkind,
   number: TypeDefKind.Integerkind,
