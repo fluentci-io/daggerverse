@@ -85,7 +85,7 @@ export function main() {
         );
       }
 
-      const result = invoke(module[name], ...variableValues);
+      const result = await invoke(module[name], ...variableValues);
 
       console.log("=> result", result);
 
