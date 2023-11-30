@@ -36,6 +36,10 @@ const typeMap: Record<string, TypeDefKind> = {
   number: TypeDefKind.Integerkind,
   boolean: TypeDefKind.Booleankind,
   void: TypeDefKind.Voidkind,
+  "Promise<string>": TypeDefKind.Stringkind,
+  "Promise<number>": TypeDefKind.Integerkind,
+  "Promise<boolean>": TypeDefKind.Booleankind,
+  "Promise<void>": TypeDefKind.Voidkind,
 };
 
 const listTypeMap: Record<string, TypeDefKind> = {
