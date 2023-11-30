@@ -20,7 +20,7 @@ if (fs.existsSync("/src/.fluentci/mod.ts")) {
 }
 
 const module = await import(moduleEntrypoint);
-const metadata = introspect(moduleEntrypoint);
+const metadata = introspect(moduleEntrypoint.replace("file://", ""));
 const functions = metadata.map((m) => m.functionName);
 
 if (!module) {
