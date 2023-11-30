@@ -76,7 +76,7 @@ export function main() {
 
       const argsType = getArgsType(metadata, name);
       const variableValues: any[] = [];
-      for (const arg of args) {
+      for (const arg of args.reverse()) {
         const argName = await arg.name();
         const argValue = await arg.value();
         console.log("args => ", argName, argValue, typeof argValue);
