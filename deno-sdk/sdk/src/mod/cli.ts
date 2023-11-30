@@ -75,19 +75,24 @@ export function main() {
       console.log("function call name => ", name);
 
       const argsType = getArgsType(metadata, name);
-      const variableValues: any[] = [];
-      for (const arg of args.reverse()) {
+      const _variableValues: any[] = [];
+      let variableValues: any[] = [];
+      for (const arg of args) {
         const argName = await arg.name();
         const argValue = await arg.value();
         console.log("args => ", argName, argValue, typeof argValue);
 
-        variableValues.push(
-          parseArg(
+        _variableValues.push({
+          [argName]: parseArg(
             argValue,
             argsType.find((a) => a.name === argName)?.type || "string"
-          )
-        );
+          ),
+        });
       }
+
+      variableValues = argsType.map(
+        (a) => _variableValues.find((v) => v[a.name])[a.name]
+      );
 
       const result = await invoke(module[name], ...variableValues);
 
