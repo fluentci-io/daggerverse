@@ -108,7 +108,7 @@ export function main() {
 function parseArg(value: any, type: string) {
   switch (type) {
     case "string":
-      return value;
+      return value.replace(/"/g, "");
     case "number":
       return parseInt(value);
     case "boolean":
