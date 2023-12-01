@@ -90,8 +90,12 @@ export function main() {
         });
       }
 
-      variableValues = argsType.map(
-        (a) => _variableValues.find((v) => v[a.name])[a.name]
+      variableValues = argsType.map((a) =>
+        _.get(
+          _variableValues.find((v) => v[a.name]),
+          a.name,
+          undefined
+        )
       );
 
       const result = await invoke(module[name], ...variableValues);
