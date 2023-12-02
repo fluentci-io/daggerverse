@@ -14,7 +14,9 @@ Deno.test("getReturnType", () => {
         {
           functionName: "hello",
           doc: 'Returns "Hello {name}"',
-          parameters: [{ name: "name", type: "string", optional: true }],
+          parameters: [
+            { doc: "", name: "name", type: "string", optional: true },
+          ],
           returnType: "string",
         },
       ],
@@ -28,7 +30,9 @@ Deno.test("getReturnType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "Container",
         },
       ],
@@ -45,7 +49,9 @@ Deno.test("getObjectReturnType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "Container",
         },
       ],
@@ -59,7 +65,9 @@ Deno.test("getObjectReturnType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "Container | string",
         },
       ],
@@ -73,7 +81,9 @@ Deno.test("getObjectReturnType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "string | Container",
         },
       ],
@@ -90,13 +100,15 @@ Deno.test("getArgsType", () => {
         {
           functionName: "hello",
           doc: 'Returns "Hello {name}"',
-          parameters: [{ name: "name", type: "string", optional: true }],
+          parameters: [
+            { doc: "name", name: "name", type: "string", optional: true },
+          ],
           returnType: "string",
         },
       ],
       "hello"
     ),
-    [{ name: "name", type: "string", optional: true }]
+    [{ doc: "name", name: "name", type: "string", optional: true }]
   );
   assertEquals(
     getObjectArgType(
@@ -104,7 +116,9 @@ Deno.test("getArgsType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "Container",
         },
       ],
@@ -122,7 +136,9 @@ Deno.test("getObjectArgType", () => {
         {
           functionName: "container",
           doc: "function example with Container as parameter",
-          parameters: [{ name: "_c", type: "Container", optional: false }],
+          parameters: [
+            { doc: "", name: "_c", type: "Container", optional: false },
+          ],
           returnType: "Container",
         },
       ],
@@ -138,8 +154,9 @@ Deno.test("getObjectArgType", () => {
           functionName: "container",
           doc: "function example with Container as parameter",
           parameters: [
-            { name: "_c", type: "Container", optional: false },
+            { doc: "", name: "_c", type: "Container", optional: false },
             {
+              doc: "",
               name: "src",
               type: "string | Directory | undefined",
               optional: false,

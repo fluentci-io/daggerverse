@@ -3,7 +3,7 @@ import { ts } from "../../deps.ts";
 export type Metadata = {
   functionName: string;
   doc?: string;
-  parameters: { name: string; type: string; optional: boolean }[];
+  parameters: { name: string; type: string; optional: boolean; doc: string }[];
   returnType: string;
 };
 
@@ -26,6 +26,9 @@ export default function introspect(source: string) {
         const signature = checker.getSignatureFromDeclaration(node);
         const returnType = checker.getReturnTypeOfSignature(signature!);
         const parameters = signature!.getParameters().map((parameter) => {
+          const doc = ts.displayPartsToString(
+            parameter.getDocumentationComment(checker)
+          );
           const parameterType = checker.getTypeOfSymbolAtLocation(
             parameter,
             parameter.valueDeclaration!
@@ -33,7 +36,7 @@ export default function introspect(source: string) {
           const parameterName = parameter.getName();
           const parameterTypeString = checker.typeToString(parameterType);
           const optional = isOptional(parameter);
-          return { parameterName, parameterTypeString, optional };
+          return { parameterName, parameterTypeString, doc, optional };
         });
         const functionName = node.name!.getText();
         const docTags = ts.getJSDocTags(node);
@@ -52,9 +55,10 @@ export default function introspect(source: string) {
             .map((tag) => tag.comment)
             .find((comment) => comment) as string,
           parameters: parameters.map(
-            ({ parameterName, parameterTypeString, optional }) => ({
+            ({ parameterName, parameterTypeString, optional, doc }) => ({
               name: parameterName,
               type: parameterTypeString,
+              doc,
               optional,
             })
           ),

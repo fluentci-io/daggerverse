@@ -8,34 +8,52 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "hello",
       doc: 'Returns "Hello {name}"',
-      parameters: [{ name: "name", type: "string", optional: true }],
+      parameters: [
+        { doc: "name", name: "name", type: "string", optional: true },
+      ],
       returnType: "string",
     },
     {
       functionName: "add",
       doc: "Returns x + y",
       parameters: [
-        { name: "x", type: "number", optional: false },
-        { name: "y", type: "number", optional: false },
+        { doc: "first number", name: "x", type: "number", optional: false },
+        { doc: "second number", name: "y", type: "number", optional: false },
       ],
       returnType: "number",
     },
     {
       functionName: "join",
       doc: "Returns string joined by ','",
-      parameters: [{ name: "a", type: "string[]", optional: false }],
+      parameters: [
+        {
+          doc: "array of strings",
+          name: "a",
+          type: "string[]",
+          optional: false,
+        },
+      ],
       returnType: "string",
     },
     {
       functionName: "container",
       doc: "function example with Container as parameter",
-      parameters: [{ name: "_c", type: "Container", optional: false }],
+      parameters: [
+        {
+          doc: "Container instance",
+          name: "_c",
+          type: "Container",
+          optional: false,
+        },
+      ],
       returnType: "void",
     },
     {
       functionName: "greet",
       doc: 'Returns "Hello {name}"',
-      parameters: [{ name: "name", type: "string", optional: true }],
+      parameters: [
+        { doc: "name", name: "name", type: "string", optional: true },
+      ],
       returnType: "string",
     },
   ]);
@@ -48,34 +66,52 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "hello",
       doc: 'Returns "Hello {name}"',
-      parameters: [{ name: "name", type: "string", optional: true }],
+      parameters: [
+        { doc: "name", name: "name", type: "string", optional: true },
+      ],
       returnType: "string",
     },
     {
       functionName: "add",
       doc: "Returns x + y",
       parameters: [
-        { name: "x", type: "number", optional: false },
-        { name: "y", type: "number", optional: false },
+        { doc: "first number", name: "x", type: "number", optional: false },
+        { doc: "second number", name: "y", type: "number", optional: false },
       ],
       returnType: "number",
     },
     {
       functionName: "join",
       doc: "Returns string joined by ','",
-      parameters: [{ name: "a", type: "string[]", optional: false }],
+      parameters: [
+        {
+          doc: "array of strings",
+          name: "a",
+          type: "string[]",
+          optional: false,
+        },
+      ],
       returnType: "string",
     },
     {
       functionName: "container",
       doc: "function example with Container as parameter",
-      parameters: [{ name: "_c", type: "Container", optional: false }],
+      parameters: [
+        {
+          doc: "Container instance",
+          name: "_c",
+          type: "Container",
+          optional: false,
+        },
+      ],
       returnType: "void",
     },
     {
       functionName: "greet",
       doc: 'Returns "Hello {name}"',
-      parameters: [{ name: "name", type: "string", optional: true }],
+      parameters: [
+        { doc: "name", name: "name", type: "string", optional: true },
+      ],
       returnType: "string",
     },
   ]);

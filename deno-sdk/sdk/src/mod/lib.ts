@@ -7,7 +7,7 @@ export function getReturnType(metadata: Metadata[], functionName: string) {
 export function getArgsType(
   metadata: Metadata[],
   functionName: string
-): { name: string; type: string; optional: boolean }[] {
+): { name: string; type: string; optional: boolean; doc: string }[] {
   return (
     metadata.find((m) => m.functionName === functionName)?.parameters || []
   );

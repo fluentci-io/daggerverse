@@ -150,7 +150,10 @@ function register(
     if (objectType) {
       fn = fn.withArg(
         arg.name,
-        client.typeDef().withObject(objectType).withOptional(arg.optional)
+        client.typeDef().withObject(objectType).withOptional(arg.optional),
+        {
+          description: arg.doc,
+        }
       );
       continue;
     }
@@ -161,14 +164,20 @@ function register(
         client
           .typeDef()
           .withListOf(client.typeDef().withKind(listTypeMap[arg.type]))
-          .withOptional(arg.optional)
+          .withOptional(arg.optional),
+        {
+          description: arg.doc,
+        }
       );
       continue;
     }
 
     fn = fn.withArg(
       arg.name,
-      client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional)
+      client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional),
+      {
+        description: arg.doc,
+      }
     );
   }
 
