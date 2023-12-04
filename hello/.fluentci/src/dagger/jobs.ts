@@ -1,5 +1,6 @@
-import Client from "../../deps.ts";
+import Client, { Directory } from "../../deps.ts";
 import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   hello = "hello",
@@ -7,24 +8,31 @@ export enum Job {
 
 export const exclude = [];
 
-export const hello = async (src = ".") => {
+/**
+ * @function
+ * @description Say hello
+ * @param src {src: string | Directory | undefined}
+ * @returns {string}
+ */
+export async function hello(
+  src: string | Directory | undefined = "."
+): Promise<string> {
   let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
-    const answer = await client.base().hello();
+    const context = getDirectory(client, src);
     const ctr = client
       .pipeline("hello")
       .container()
       .from("alpine")
       .withDirectory("/app", context)
       .withWorkdir("/app")
-      .withExec(["echo", `'Hello, world!' ${answer}`]);
+      .withExec(["echo", "'Hello, world!'"]);
 
     result = await ctr.stdout();
   });
 
   return result.replace(/(\r\n|\n|\r)/gm, "");
-};
+}
 
 export type JobExec = (src?: string) =>
   | Promise<string>
