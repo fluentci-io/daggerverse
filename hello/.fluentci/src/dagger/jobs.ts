@@ -26,12 +26,13 @@ export async function hello(
       .from("alpine")
       .withDirectory("/app", context)
       .withWorkdir("/app")
-      .withExec(["echo", "'Hello, world!'"]);
+      .withExec(["echo", "'Hello, world!'"])
+      .withExec(["echo", "'Hello, again!\nhello'"]);
 
     result = await ctr.stdout();
   });
 
-  return result.replace(/(\r\n|\n|\r)/gm, "");
+  return result.replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r");
 }
 
 export type JobExec = (src?: string) =>

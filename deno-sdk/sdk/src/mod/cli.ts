@@ -102,7 +102,7 @@ export function main() {
 
       console.log("=> result", result);
 
-      returnValue = `"${result}"`;
+      returnValue = JSON.stringify(result);
     }
 
     await fnCall.returnValue(returnValue as any);
