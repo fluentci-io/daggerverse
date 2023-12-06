@@ -32,7 +32,7 @@ export async function hello(
     result = await ctr.stdout();
   });
 
-  return result.replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+  return result;
 }
 
 export type JobExec = (src?: string) =>
