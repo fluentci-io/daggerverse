@@ -58,9 +58,12 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 }
 
 func (m *DenoSdk) CodegenBin() *File {
-	return m.goBase().
-		WithExec([]string{"go", "install", "github.com/fluentci-io/codegen@latest"}).
-		File("/go/bin/codegen")
+	codegen := "codegen_v0.1.0_x86_64_unknown_linux-gnu.tar.gz"
+	return dag.Container().
+		From("alpine:latest").
+		WithExec([]string{"wget", "https://github.com/fluentci-io/codegen/releases/download/v0.1.0/" + codegen}).
+		WithExec([]string{"tar", "-xvf", codegen}).
+		File("/codegen")
 }
 
 func (m *DenoSdk) Base() *Container {
@@ -73,12 +76,6 @@ func (m *DenoSdk) denoBase() *Container {
 	opts := ContainerOpts{}
 	return dag.Container(opts).
 		From("denoland/deno:alpine-1.37.0").
-		WithExec([]string{"apk", "add", "--no-cache", "git"}).
+		WithExec([]string{"apk", "add", "--no-cache", "git", "libc6-compat"}).
 		WithMountedCache("/deno-dir", dag.CacheVolume("moddenocache"))
-}
-
-func (m *DenoSdk) goBase() *Container {
-	opts := ContainerOpts{}
-	return dag.Container(opts).
-		From("golang:1.21-alpine")
 }
