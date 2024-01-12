@@ -11,7 +11,7 @@ export const exclude = [];
 /**
  * @function
  * @description Say hello
- * @param src {src: string | Directory | undefined}
+ * @param {string | Directory | undefined} src
  * @returns {string}
  */
 export async function hello(
