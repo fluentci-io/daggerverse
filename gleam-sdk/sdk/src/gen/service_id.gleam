@@ -1,0 +1,2 @@
+pub type ServiceId =
+  String

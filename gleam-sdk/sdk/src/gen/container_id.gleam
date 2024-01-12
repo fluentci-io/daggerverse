@@ -1,0 +1,2 @@
+pub type ContainerId =
+  String
