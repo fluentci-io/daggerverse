@@ -1,2 +1,2 @@
-pub type ServiceId =
+pub type ServiceID =
   String

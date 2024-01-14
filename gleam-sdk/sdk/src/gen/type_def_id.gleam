@@ -1,2 +1,2 @@
-pub type TypeDefId =
+pub type TypeDefID =
   String

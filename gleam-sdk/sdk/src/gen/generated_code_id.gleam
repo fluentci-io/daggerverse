@@ -1,2 +1,2 @@
-pub type GeneratedCodeId =
+pub type GeneratedCodeID =
   String

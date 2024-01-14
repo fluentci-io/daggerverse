@@ -1,2 +1,2 @@
-pub type FunctionId =
+pub type FunctionID =
   String

@@ -1,2 +1,2 @@
-pub type GitRefId =
+pub type GitRefID =
   String

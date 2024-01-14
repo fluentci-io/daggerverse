@@ -1,2 +1,2 @@
-pub type FileId =
+pub type FileID =
   String

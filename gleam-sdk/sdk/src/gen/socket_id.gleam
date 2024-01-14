@@ -1,2 +1,2 @@
-pub type SocketId =
+pub type SocketID =
   String

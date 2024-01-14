@@ -1,2 +1,2 @@
-pub type SecretId =
+pub type SecretID =
   String

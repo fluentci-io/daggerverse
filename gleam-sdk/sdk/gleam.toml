@@ -1,13 +1,13 @@
 name = "gleam_dagger"
-version = "1.0.0"
+version = "0.9.6"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
 # your project to the Hex package manager.
 #
-# description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "username", repo = "project" }
-# links = [{ title = "Website", href = "https://gleam.run" }]
+description = "Dagger SDK for Gleam"
+licences = ["Apache-2.0"]
+links = [{title = "Dagger", href = "https://dagger.io"}]
+repository = {type = "github", user = "fluentci-io", repo = "daggerverse"}
 
 [dependencies]
 envoy = "~> 1.0"

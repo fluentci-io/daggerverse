@@ -1,2 +1,2 @@
-pub type DirectoryId =
+pub type DirectoryID =
   String

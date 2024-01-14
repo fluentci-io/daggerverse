@@ -1,3 +1,1 @@
-pub type Http {
-  Http
-}
+

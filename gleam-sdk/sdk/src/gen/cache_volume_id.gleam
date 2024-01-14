@@ -1,2 +1,2 @@
-pub type CacheVolumeId =
+pub type CacheVolumeID =
   String

@@ -1,2 +1,2 @@
-pub type ContainerId =
+pub type ContainerID =
   String

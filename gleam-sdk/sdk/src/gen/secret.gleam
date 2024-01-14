@@ -1,9 +1,2 @@
-import gen/secret_id.{type SecretId}
-
-pub type Secret {
-  Secret(id: SecretId)
-}
-
-pub fn new(id: SecretId) -> Secret {
-  Secret(id)
-}
+import gen/base_client.{type BaseClient}
+import gen/response.{type Response}

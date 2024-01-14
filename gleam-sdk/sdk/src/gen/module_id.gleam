@@ -1,2 +1,2 @@
-pub type ModuleId =
+pub type ModuleID =
   String

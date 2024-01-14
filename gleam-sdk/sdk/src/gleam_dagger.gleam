@@ -7,8 +7,10 @@ import gleam/json
 import gleam/option.{Some}
 import graphql
 import envoy
-import gen/client.{container}
+import gen/base_client.{type BaseClient, container, directory, pipeline}
+import gen/client_directory_opts
 import gen/container.{from, stdout, with_exec}
+import gen/types.{type Directory}
 
 pub type Data {
   Data(country: Country)
@@ -18,18 +20,31 @@ pub type Country {
   Country(name: String)
 }
 
-const country_query = "query CountryQuery($code: ID!) {
-  country(code: $code) {
+const country_query = "
+query {
+  country(code: \"GB\") {
     name
   }
-}"
+  }
+"
+
+pub fn connect() -> BaseClient(t) {
+  base_client.connect([])
+}
 
 pub fn main() {
-  client.connect()
-  |> container()
-  |> from("golang:1.19")
-  |> with_exec(["go", "version"])
-  |> stdout()
+  let client = connect()
+
+  //  let directory: Directory =
+  //  client
+  //  |> directory(client_directory_opts.new(""))
+
+  // client
+  // |> pipeline("demo")
+  // |> container()
+  // |> from("golang:1.19")
+  // |> with_exec(["go", "version"])
+  // |> stdout()
 
   let assert Ok(request) = request.to("https://api.github.com/users/tsirysndr")
 
@@ -44,7 +59,7 @@ pub fn main() {
   let assert Ok(Some(data)) =
     graphql.new()
     |> graphql.set_query(country_query)
-    |> graphql.set_variable("code", json.string("GB"))
+    // |> graphql.set_variable("code", json.string("GB"))
     |> graphql.set_host("countries.trevorblades.com")
     |> graphql.set_path("/graphql")
     |> graphql.set_header("Content-Type", "application/json")

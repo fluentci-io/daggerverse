@@ -1,16 +1,10 @@
-import gen/container_id.{type ContainerId}
-import gen/file.{type File}
-import gen/service.{type Service}
-import gen/directory.{type Directory}
-
-pub type Container {
-  Container(id: ContainerId)
-}
+import gen/container_id.{type ContainerID}
+import gen/types.{type Container, type Directory, type File, type Service}
 
 /// A unique identifier for this container .
 ///  
-pub fn id(container: Container) -> ContainerId {
-  container.id
+pub fn id(container: Container) -> ContainerID {
+  ""
 }
 
 /// Turn the container into a Service.
@@ -18,13 +12,13 @@ pub fn id(container: Container) -> ContainerId {
 /// Be sure to set any exposed ports before this conversion.
 /// 
 pub fn as_service(container: Container) -> Service {
-  service.new("")
+  container
 }
 
 /// Returns a File representing the container serialized to a tarball.
 /// 
 pub fn as_tarball(container: Container) -> File {
-  file.new("")
+  container
 }
 
 /// Initializes this container from a Dockerfile build.
@@ -42,7 +36,7 @@ pub fn default_args(container: Container) -> List(String) {
 /// Retrieves a directory at the given path.
 /// 
 pub fn directory(container: Container, path: String) -> Directory {
-  directory.new("")
+  container
 }
 
 /// 
