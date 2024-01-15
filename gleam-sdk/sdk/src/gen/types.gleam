@@ -1,59 +1,58 @@
 import gen/base_client.{type BaseClient}
-import gen/response.{type Response}
 
 pub type CacheVolume =
-  BaseClient(Response)
+  BaseClient
 
 pub type Container =
-  BaseClient(Response)
+  BaseClient
 
 pub type Directory =
-  BaseClient(Response)
+  BaseClient
 
 pub type File =
-  BaseClient(Response)
+  BaseClient
 
 pub type FunctionArg =
-  BaseClient(Response)
+  BaseClient
 
 pub type Function =
-  BaseClient(Response)
+  BaseClient
 
 pub type FunctionCall =
-  BaseClient(Response)
+  BaseClient
 
 pub type GeneratedCode =
-  BaseClient(Response)
+  BaseClient
 
 pub type GitRef =
-  BaseClient(Response)
+  BaseClient
 
 pub type GitRepository =
-  BaseClient(Response)
+  BaseClient
 
 pub type Host =
-  BaseClient(Response)
+  BaseClient
 
 pub type Http =
-  BaseClient(Response)
+  BaseClient
 
 pub type ModuleConfig =
-  BaseClient(Response)
+  BaseClient
 
 pub type Module =
-  BaseClient(Response)
+  BaseClient
 
 pub type Pipeline =
-  BaseClient(Response)
+  BaseClient
 
 pub type Secret =
-  BaseClient(Response)
+  BaseClient
 
 pub type Service =
-  BaseClient(Response)
+  BaseClient
 
 pub type Socket =
-  BaseClient(Response)
+  BaseClient
 
 pub type TypeDef =
-  BaseClient(Response)
+  BaseClient
