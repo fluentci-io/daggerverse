@@ -16,7 +16,6 @@ import gen/socket_id.{type SocketID}
 import gen/type_def_id.{type TypeDefID}
 import gen/client_directory_opts.{type ClientDirectoryOpts}
 import gen/client_container_opts.{type ClientContainerOpts}
-import graphql.{type Request}
 import gleam/dynamic
 import gleam/dict
 import gleam/list
