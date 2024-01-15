@@ -12,19 +12,22 @@ pub type Directory =
 pub type EnvVariable =
   BaseClient
 
-pub type File =
-  BaseClient
-
 pub type FieldTypeDef =
   BaseClient
 
-pub type FunctionArg =
+pub type File =
   BaseClient
 
 pub type Function =
   BaseClient
 
+pub type FunctionArg =
+  BaseClient
+
 pub type FunctionCall =
+  BaseClient
+
+pub type FunctionCallArgValue =
   BaseClient
 
 pub type GeneratedCode =
@@ -39,16 +42,25 @@ pub type GitRepository =
 pub type Host =
   BaseClient
 
-pub type Http =
+pub type InterfaceTypeDef =
   BaseClient
 
-pub type ModuleConfig =
+pub type Label =
+  BaseClient
+
+pub type ListTypeDef =
   BaseClient
 
 pub type Module =
   BaseClient
 
-pub type Pipeline =
+pub type ModuleConfig =
+  BaseClient
+
+pub type ObjectTypeDef =
+  BaseClient
+
+pub type Port =
   BaseClient
 
 pub type Secret =
