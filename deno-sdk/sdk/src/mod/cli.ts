@@ -32,20 +32,20 @@ if (!metadata.length) {
 }
 
 const typeMap: Record<string, TypeDefKind> = {
-  string: TypeDefKind.Stringkind,
-  number: TypeDefKind.Integerkind,
-  boolean: TypeDefKind.Booleankind,
-  void: TypeDefKind.Voidkind,
-  "Promise<string>": TypeDefKind.Stringkind,
-  "Promise<number>": TypeDefKind.Integerkind,
-  "Promise<boolean>": TypeDefKind.Booleankind,
-  "Promise<void>": TypeDefKind.Voidkind,
+  string: TypeDefKind.StringKind,
+  number: TypeDefKind.IntegerKind,
+  boolean: TypeDefKind.BooleanKind,
+  void: TypeDefKind.VoidKind,
+  "Promise<string>": TypeDefKind.StringKind,
+  "Promise<number>": TypeDefKind.IntegerKind,
+  "Promise<boolean>": TypeDefKind.BooleanKind,
+  "Promise<void>": TypeDefKind.VoidKind,
 };
 
 const listTypeMap: Record<string, TypeDefKind> = {
-  "string[]": TypeDefKind.Stringkind,
-  "number[]": TypeDefKind.Integerkind,
-  "boolean[]": TypeDefKind.Booleankind,
+  "string[]": TypeDefKind.StringKind,
+  "number[]": TypeDefKind.IntegerKind,
+  "boolean[]": TypeDefKind.BooleanKind,
 };
 
 const functionDescription = (key: string) =>

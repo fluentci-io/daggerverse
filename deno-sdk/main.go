@@ -57,7 +57,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 }
 
 func (m *DenoSdk) CodegenBin() *File {
-	codegen := "codegen_v0.1.0_x86_64_unknown_linux-gnu.tar.gz"
+	codegen := "codegen_v0.2.0_x86_64_unknown_linux-gnu.tar.gz"
 	return dag.Container().
 		From("alpine:latest").
 		WithExec([]string{"wget", "https://github.com/fluentci-io/codegen/releases/download/v0.1.0/" + codegen}).
