@@ -27,6 +27,7 @@ export function getObjectReturnType(
   const fileRegex = /\bFile\b/;
   const directoryRegex = /\bDirectory\b/;
   const secretRegex = /\bSecret\b/;
+  const serviceRegex = /\bService\b/;
 
   if (containerRegex.test(returnType)) {
     return "Container";
@@ -43,6 +44,10 @@ export function getObjectReturnType(
   if (secretRegex.test(returnType)) {
     return "Secret";
   }
+
+  if (serviceRegex.test(returnType)) {
+    return "Service";
+  }
 }
 
 export function getObjectArgType(
@@ -55,6 +60,7 @@ export function getObjectArgType(
   const fileRegex = /\bFile\b/;
   const directoryRegex = /\bDirectory\b/;
   const secretRegex = /\bSecret\b/;
+  const serviceRegex = /\bService\b/;
 
   const arg = args.find((a) => a.name === argName);
   if (!arg) {
@@ -76,5 +82,9 @@ export function getObjectArgType(
 
   if (secretRegex.test(argType)) {
     return "Secret";
+  }
+
+  if (serviceRegex.test(argType)) {
+    return "Service";
   }
 }
