@@ -1,11 +1,24 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"path"
 	"path/filepath"
 )
 
-type DenoSdk struct{}
+func New(
+	// +optional
+	sdkSourceDir *Directory,
+) *DenoSdk {
+	return &DenoSdk{
+		SDKSourceDir: sdkSourceDir,
+	}
+}
+
+type DenoSdk struct {
+	SDKSourceDir *Directory
+}
 
 const (
 	ModSourceDirPath      = "/src"
@@ -14,11 +27,20 @@ const (
 	codegenVersion        = "v0.2.0"
 )
 
-func (m *DenoSdk) ModuleRuntime(modSource *Directory, subPath string, introspectionJson string) *Container {
+func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*Container, error) {
+
+	subPath, err := modSource.Subpath(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not load module config: %v", err)
+	}
+
 	modSubPath := filepath.Join(ModSourceDirPath, subPath)
 	return m.Base().
-		WithDirectory(ModSourceDirPath, modSource).
-		WithWorkdir(modSubPath).
+		// Add template directory
+		WithMountedDirectory("/opt", dag.CurrentModule().Source().Directory(".")).
+		// Mount users' module
+		WithMountedDirectory(ModSourceDirPath, modSource.RootDirectory()).
+		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
 		WithNewFile(schemaPath, ContainerWithNewFileOpts{
 			Contents: introspectionJson,
 		}).
@@ -37,12 +59,18 @@ func (m *DenoSdk) ModuleRuntime(modSource *Directory, subPath string, introspect
 		}).
 		WithWorkdir(ModSourceDirPath).
 		WithEntrypoint([]string{RuntimeExecutablePath}).
-		WithLabel("io.dagger.module.config", modSubPath)
+		WithLabel("io.dagger.module.config", modSubPath), nil
 }
 
-func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJson string) *GeneratedCode {
+func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*GeneratedCode, error) {
+
+	subPath, err := modSource.Subpath(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not load module config: %v", err)
+	}
+
 	base := m.Base().
-		WithMountedDirectory(ModSourceDirPath, modSource).
+		WithMountedDirectory(ModSourceDirPath, modSource.RootDirectory()).
 		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
 		WithNewFile(schemaPath, ContainerWithNewFileOpts{
 			Contents: introspectionJson,
@@ -54,7 +82,7 @@ func (m *DenoSdk) Codegen(modSource *Directory, subPath string, introspectionJso
 		}).
 		Directory(".")
 
-	return dag.GeneratedCode(codegen)
+	return dag.GeneratedCode(codegen), nil
 }
 
 func (m *DenoSdk) CodegenBin() *File {
@@ -68,7 +96,7 @@ func (m *DenoSdk) CodegenBin() *File {
 
 func (m *DenoSdk) Base() *Container {
 	return m.denoBase().
-		WithDirectory("/sdk", dag.Host().Directory(".")).
+		WithDirectory("/sdk", m.SDKSourceDir).
 		WithFile("/usr/bin/codegen", m.CodegenBin())
 }
 

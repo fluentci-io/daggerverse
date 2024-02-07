@@ -1,4 +1,9 @@
 {
   "name": "deno-sdk",
-  "sdk": "go"
+  "sdk": "go",
+  "root-for": [
+    {
+      "source": "."
+    }
+  ]
 }
