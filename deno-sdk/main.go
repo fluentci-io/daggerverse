@@ -96,7 +96,7 @@ func (m *DenoSdk) CodegenBin() *File {
 
 func (m *DenoSdk) Base() *Container {
 	return m.denoBase().
-		WithDirectory("/sdk", m.SDKSourceDir).
+		WithDirectory("/sdk", dag.CurrentModule().Source().Directory(".")).
 		WithFile("/usr/bin/codegen", m.CodegenBin())
 }
 
