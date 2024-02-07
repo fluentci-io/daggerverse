@@ -19,7 +19,7 @@ export async function hello(
 ): Promise<string> {
   let result = "";
   await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+    const context = await getDirectory(client, src);
     const ctr = client
       .pipeline("hello")
       .container()
