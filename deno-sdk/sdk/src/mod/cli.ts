@@ -54,13 +54,13 @@ const functionDescription = (key: string) =>
 export function main() {
   connect(async (client: Client) => {
     const fnCall = client.currentFunctionCall();
-    let mod = client.currentModule();
+    let mod = client.module_();
 
     const name = await fnCall.name();
     let returnValue;
 
     if (name === "") {
-      const moduleName = await mod.name();
+      const moduleName = await client.currentModule().name();
       let objDef = client.typeDef().withObject(moduleName);
 
       for (const key of functions) {
