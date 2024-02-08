@@ -105,7 +105,7 @@ export const getDirectory = async (
     const id = await directory.id();
     return id.toString();
   } catch (_) {
-    const id = await client.currentModule().source().directory(src).id();
+    const id = await client.host().directory(src as string);
     return id.toString();
   }
 };
