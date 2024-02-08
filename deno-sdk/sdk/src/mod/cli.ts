@@ -153,6 +153,7 @@ function register(
         client.typeDef().withObject(objectType).withOptional(arg.optional),
         {
           description: arg.doc,
+          defaultValue: arg.defaultValue as string & { __JSON: never },
         }
       );
       continue;
@@ -167,6 +168,7 @@ function register(
           .withOptional(arg.optional),
         {
           description: arg.doc,
+          defaultValue: arg.defaultValue as string & { __JSON: never },
         }
       );
       continue;
@@ -177,6 +179,7 @@ function register(
       client.typeDef().withKind(typeMap[arg.type]).withOptional(arg.optional),
       {
         description: arg.doc,
+        defaultValue: arg.defaultValue as string & { __JSON: never },
       }
     );
   }

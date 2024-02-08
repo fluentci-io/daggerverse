@@ -3,7 +3,13 @@ import { ts } from "../../deps.ts";
 export type Metadata = {
   functionName: string;
   doc?: string;
-  parameters: { name: string; type: string; optional: boolean; doc: string }[];
+  parameters: {
+    name: string;
+    type: string;
+    optional: boolean;
+    doc: string;
+    defaultValue?: string;
+  }[];
   returnType: string;
 };
 
@@ -36,7 +42,7 @@ export default function introspect(source: string) {
           const parameterName = parameter.getName();
           const parameterTypeString = checker.typeToString(parameterType);
           const optional = isOptional(parameter);
-          return { parameterName, parameterTypeString, doc, optional };
+          return { parameterName, parameterTypeString, doc, ...optional };
         });
         const functionName = node.name!.getText();
         const docTags = ts.getJSDocTags(node);
@@ -55,11 +61,18 @@ export default function introspect(source: string) {
             .map((tag) => tag.comment)
             .find((comment) => comment) as string,
           parameters: parameters.map(
-            ({ parameterName, parameterTypeString, optional, doc }) => ({
+            ({
+              parameterName,
+              parameterTypeString,
+              optional,
+              defaultValue,
+              doc,
+            }) => ({
               name: parameterName,
               type: parameterTypeString,
               doc,
               optional,
+              defaultValue,
             })
           ),
           returnType: returnTypeString,
@@ -70,7 +83,10 @@ export default function introspect(source: string) {
   return metadata;
 }
 
-function isOptional(param: ts.Symbol): boolean {
+function isOptional(param: ts.Symbol): {
+  optional: boolean;
+  defaultValue?: string;
+} {
   const declarations = param.getDeclarations();
 
   // Only check if the parameters actually have declarations
@@ -79,12 +95,38 @@ function isOptional(param: ts.Symbol): boolean {
 
     // Convert the symbol declaration into Parameter
     if (ts.isParameter(parameterDeclaration)) {
-      return (
+      const optional =
         parameterDeclaration.questionToken !== undefined ||
-        parameterDeclaration.initializer !== undefined
-      );
+        parameterDeclaration.initializer !== undefined;
+
+      if (parameterDeclaration.initializer) {
+        const defaultValue = formatDefaultValue(
+          parameterDeclaration.initializer.getText()
+        );
+        return {
+          optional,
+          defaultValue,
+        };
+      }
+
+      return {
+        optional:
+          parameterDeclaration.questionToken !== undefined ||
+          parameterDeclaration.initializer !== undefined,
+      };
     }
   }
 
-  return false;
+  return { optional: false };
+}
+
+function formatDefaultValue(value: string): string {
+  const isSingleQuoteString = (): boolean =>
+    value.startsWith("'") && value.endsWith("'");
+
+  if (isSingleQuoteString()) {
+    return `"${value.slice(1, value.length - 1)}"`;
+  }
+
+  return value;
 }
