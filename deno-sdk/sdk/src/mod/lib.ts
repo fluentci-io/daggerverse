@@ -100,6 +100,9 @@ export const getDirectory = async (
   client: Client,
   src: string | undefined = "."
 ) => {
+  if (src === '"."' || src === ".") {
+    return undefined;
+  }
   try {
     const directory = client.loadDirectoryFromID(src as DirectoryID);
     const id = await directory.id();
