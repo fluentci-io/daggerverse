@@ -155,7 +155,7 @@ async function register(
         {
           description: arg.doc,
           defaultValue: (objectType === "Directory"
-            ? await getDirectory(client, arg.defaultValue)
+            ? await getDirectory(client, arg.defaultValue?.replaceAll('"', ""))
             : arg.defaultValue) as string & { __JSON: never },
         }
       );
