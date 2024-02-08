@@ -9,6 +9,7 @@ import {
   getReturnType,
   getObjectReturnType,
   getObjectArgType,
+  getDirectory,
 } from "./lib.ts";
 import invoke from "./invoke.ts";
 import introspect from "./introspect.ts";
@@ -64,7 +65,7 @@ export function main() {
       let objDef = client.typeDef().withObject(moduleName);
 
       for (const key of functions) {
-        objDef = register(client, key, objDef, functionDescription(key));
+        objDef = await register(client, key, objDef, functionDescription(key));
       }
 
       mod = mod.withObject(objDef);
@@ -128,7 +129,7 @@ function parseArg(value: any, type: string) {
   }
 }
 
-function register(
+async function register(
   client: Client,
   functionName: any,
   objDef: TypeDef,
@@ -153,7 +154,9 @@ function register(
         client.typeDef().withObject(objectType).withOptional(arg.optional),
         {
           description: arg.doc,
-          defaultValue: arg.defaultValue as string & { __JSON: never },
+          defaultValue: (objectType === "Directory"
+            ? await getDirectory(client, arg.defaultValue)
+            : arg.defaultValue) as string & { __JSON: never },
         }
       );
       continue;

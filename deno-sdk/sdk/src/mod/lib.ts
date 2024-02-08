@@ -1,3 +1,4 @@
+import { Client, Directory, DirectoryID } from "../client.ts";
 import { Metadata } from "./introspect.ts";
 
 export function getReturnType(metadata: Metadata[], functionName: string) {
@@ -94,3 +95,17 @@ export function getObjectArgType(
     return "Service";
   }
 }
+
+export const getDirectory = async (
+  client: Client,
+  src: string | undefined = "."
+) => {
+  try {
+    const directory = client.loadDirectoryFromID(src as DirectoryID);
+    const id = await directory.id();
+    return id.toString();
+  } catch (_) {
+    const id = await client.currentModule().source().directory(src).id();
+    return id.toString();
+  }
+};
