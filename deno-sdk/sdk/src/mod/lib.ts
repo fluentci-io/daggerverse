@@ -103,12 +103,12 @@ export const getDirectory = async (
   try {
     const directory = client.loadDirectoryFromID(src as DirectoryID);
     const id = await directory.id();
-    return id.toString();
+    return `"${id.toString()}"`;
   } catch (_) {
     const id = await client
       .host()
       .directory(src as string)
       .id();
-    return id.toString();
+    return `"${id.toString()}"`;
   }
 };
