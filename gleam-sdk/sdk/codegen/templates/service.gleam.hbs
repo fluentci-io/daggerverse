@@ -1,0 +1,43 @@
+import gen/types.\{
+{{#each item.objectReturnTypes}}
+  type {{this}},
+{{/each}}
+\}
+{{#each item.returnAndArgTypes}}
+import gen/{{this._name}}.\{type {{this.name}}\}
+{{/each}}
+import gen/query_tree
+import gen/base_client
+import utils.{compute_query}
+import gleam/list
+import gleam/dict
+import gleam/dynamic
+
+{{#each item.fields}}
+
+{{#if this.description}}
+/// {{this.description}}
+///
+{{/if}}
+pub fn {{this._name}}(service: Service{{#each this.args}}, {{this._name}}: {{this.type.name}}{{/each}}) -> {{this.type.name}} {
+  {{#if this.type.isObject}}
+  base_client.new(
+    list.concat([
+      service.query_tree,
+      [
+        query_tree.new("{{this.name}}", 
+        dict.new() {{#each this.args}} |> dict.insert("{{this.name}}", dynamic.from({{this._name}})){{/each}})],
+    ]),
+  )
+  {{/if}}
+  {{#unless this.type.isObject}}
+let assert Ok(response) =
+  compute_query(
+    list.concat([service.query_tree, [
+      query_tree.new("{{this.name}}", 
+      dict.new(){{#each this.args}} |> dict.insert("{{this.name}}", dynamic.from({{this._name}})){{/each}})]])
+  )
+  response
+  {{/unless}}
+}
+{{/each}}
