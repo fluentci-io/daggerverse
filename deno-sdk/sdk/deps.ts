@@ -23,3 +23,4 @@ import ts from "npm:typescript";
 export { ts };
 export { assert } from "https://deno.land/std@0.205.0/assert/assert.ts";
 export { assertEquals } from "https://deno.land/std@0.129.0/testing/asserts.ts";
+export { parseArgs } from "https://deno.land/std@0.215.0/cli/parse_args.ts";

@@ -58,7 +58,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 			"runtime",
 		}).
 		WithWorkdir(ModSourceDirPath).
-		WithEntrypoint([]string{RuntimeExecutablePath}).
+		WithEntrypoint([]string{RuntimeExecutablePath, "--mod-path", path.Join(ModSourceDirPath, subPath)}).
 		WithLabel("io.dagger.module.config", modSubPath), nil
 }
 

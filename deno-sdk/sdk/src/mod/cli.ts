@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 import { Client, TypeDef, TypeDefKind } from "../client.ts";
 import { connect } from "../connect.ts";
-import { _ } from "../../deps.ts";
+import { _, parseArgs } from "../../deps.ts";
 import {
   getArgsType,
   getReturnType,
@@ -14,10 +14,15 @@ import {
 import invoke from "./invoke.ts";
 import introspect from "./introspect.ts";
 
-let moduleEntrypoint = "file:///src/mod.ts";
+const flags = parseArgs(Deno.args, {
+  string: ["mod-path"],
+  default: { "mod-path": "/src" },
+});
 
-if (fs.existsSync("/src/.fluentci/mod.ts")) {
-  moduleEntrypoint = "file:///src/.fluentci/mod.ts";
+let moduleEntrypoint = `file://${flags["mod-path"]}/mod.ts`;
+
+if (fs.existsSync(`${flags["mod-path"]}/.fluentci/mod.ts`)) {
+  moduleEntrypoint = `file://${flags["mod-path"]}/.fluentci/mod.ts`;
 }
 
 const module = await import(moduleEntrypoint);
