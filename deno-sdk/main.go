@@ -53,7 +53,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 			"install",
 			"--reload",
 			"-A",
-			"https://cdn.jsdelivr.net/gh/fluentci-io/daggerverse@e04e658/deno-sdk/sdk/src/mod/cli.ts",
+			"https://cdn.jsdelivr.net/gh/fluentci-io/daggerverse@52c681b/deno-sdk/sdk/src/mod/cli.ts",
 			"-n",
 			"runtime",
 		}).
