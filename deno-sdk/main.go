@@ -26,6 +26,7 @@ const (
 	schemaPath            = "/schema.json"
 	codegenVersion        = "v0.2.0"
 	sdkSrc                = "/sdk"
+	genDir                = "sdk"
 )
 
 func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*Container, error) {
@@ -77,13 +78,23 @@ func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspe
 			Contents: introspectionJson,
 		})
 
-	codegen := base.
+	ctr := base.
 		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
-		}).
-		Directory(".")
+		})
 
-	return dag.GeneratedCode(codegen), nil
+	codegen := ctr.WithDirectory(genDir, ctr.Directory(sdkSrc), ContainerWithDirectoryOpts{
+		Exclude: []string{},
+	}).
+		Directory(ModSourceDirPath)
+
+	return dag.GeneratedCode(codegen).
+		WithVCSGeneratedPaths([]string{
+			genDir + "/**",
+		}).
+		WithVCSIgnoredPaths([]string{
+			genDir,
+		}), nil
 }
 
 func (m *DenoSdk) CodegenBin() *File {
