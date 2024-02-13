@@ -10,14 +10,20 @@ import (
 func New(
 	// +optional
 	sdkSourceDir *Directory,
+
 ) *DenoSdk {
 	return &DenoSdk{
 		SDKSourceDir: sdkSourceDir,
+		RequiredPaths: []string{
+			"**/deno.json",
+			"**/deno.lock",
+		},
 	}
 }
 
 type DenoSdk struct {
-	SDKSourceDir *Directory
+	SDKSourceDir  *Directory
+	RequiredPaths []string
 }
 
 const (
