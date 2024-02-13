@@ -29,7 +29,7 @@ const (
 
 func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*Container, error) {
 
-	subPath, err := modSource.Subpath(ctx)
+	subPath, err := modSource.SourceSubpath(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not load module config: %v", err)
 	}
@@ -39,7 +39,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 		// Add template directory
 		WithMountedDirectory("/opt", dag.CurrentModule().Source().Directory(".")).
 		// Mount users' module
-		WithMountedDirectory(ModSourceDirPath, modSource.RootDirectory()).
+		WithMountedDirectory(ModSourceDirPath, modSource.ContextDirectory()).
 		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
 		WithNewFile(schemaPath, ContainerWithNewFileOpts{
 			Contents: introspectionJson,
@@ -64,13 +64,13 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 
 func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*GeneratedCode, error) {
 
-	subPath, err := modSource.Subpath(ctx)
+	subPath, err := modSource.SourceSubpath(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not load module config: %v", err)
 	}
 
 	base := m.Base().
-		WithMountedDirectory(ModSourceDirPath, modSource.RootDirectory()).
+		WithMountedDirectory(ModSourceDirPath, modSource.ContextDirectory()).
 		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
 		WithNewFile(schemaPath, ContainerWithNewFileOpts{
 			Contents: introspectionJson,
