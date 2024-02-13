@@ -25,6 +25,7 @@ const (
 	RuntimeExecutablePath = "/usr/local/bin/runtime"
 	schemaPath            = "/schema.json"
 	codegenVersion        = "v0.2.0"
+	sdkSrc                = "/sdk"
 )
 
 func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*Container, error) {
@@ -36,6 +37,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 
 	modSubPath := filepath.Join(ModSourceDirPath, subPath)
 	return m.Base().
+		WithMountedDirectory(sdkSrc, m.SDKSourceDir).
 		// Add template directory
 		WithMountedDirectory("/opt", dag.CurrentModule().Source().Directory(".")).
 		// Mount users' module
@@ -96,7 +98,6 @@ func (m *DenoSdk) CodegenBin() *File {
 
 func (m *DenoSdk) Base() *Container {
 	return m.denoBase().
-		WithDirectory("/sdk", dag.CurrentModule().Source().Directory(".")).
 		WithFile("/usr/bin/codegen", m.CodegenBin())
 }
 
