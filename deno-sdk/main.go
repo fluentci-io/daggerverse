@@ -9,11 +9,11 @@ import (
 
 func New(
 	// +optional
-	sdkSourceDir *Directory,
-
+	_sdkSourceDir *Directory,
 ) *DenoSdk {
+	sdkSourceDir := dag.Git("https://github.com/fluentci-io/daggerverse").Branch("main").Tree()
 	return &DenoSdk{
-		SDKSourceDir: sdkSourceDir,
+		SDKSourceDir: sdkSourceDir.Directory("./deno-sdk"),
 		RequiredPaths: []string{
 			"**/deno.json",
 			"**/deno.lock",
@@ -114,7 +114,7 @@ func (m *DenoSdk) CodegenBin() *File {
 
 func (m *DenoSdk) Base() *Container {
 	return m.denoBase().
-		WithDirectory("/sdk", dag.CurrentModule().Source().Directory(".")).
+		WithDirectory("/sdk", m.SDKSourceDir).
 		WithFile("/usr/bin/codegen", m.CodegenBin())
 }
 
