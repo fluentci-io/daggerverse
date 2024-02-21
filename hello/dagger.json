@@ -1,6 +1,6 @@
 {
   "name": "basic",
-  "sdk": "../deno-sdk",
+  "sdk": "github.com/fluentci-io/daggerverse/deno-sdk@main",
   "source": ".",
-  "engineVersion": "v0.9.10"
+  "engineVersion": "v0.9.11"
 }
