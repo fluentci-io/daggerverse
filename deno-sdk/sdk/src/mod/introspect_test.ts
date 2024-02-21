@@ -92,6 +92,10 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
 
 Deno.test("introspect 'fixtures/mod.ts'", () => {
   const metadata = introspect("fixtures/mod.ts");
+  assertEquals(
+    metadata.find((m) => m.moduleDescription)?.moduleDescription,
+    "This module contains functions for testing"
+  );
   assertEquals(metadata.length, 5);
   assertEquals(metadata, [
     {

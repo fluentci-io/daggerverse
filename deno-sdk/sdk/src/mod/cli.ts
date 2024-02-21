@@ -67,16 +67,22 @@ export function main() {
 
     if (name === "") {
       const moduleName = await client.currentModule().name();
-      let objDef = client.typeDef().withObject(moduleName, {
-        description: metadata.find((m) => m.moduleDescription)
-          ?.moduleDescription,
-      });
+      let objDef = client.typeDef().withObject(moduleName);
 
       for (const key of functions) {
         objDef = await register(client, key, objDef, functionDescription(key));
       }
 
       mod = mod.withObject(objDef);
+
+      const moduleDescription = metadata.find(
+        (m) => m.moduleDescription
+      )?.moduleDescription;
+
+      if (moduleDescription) {
+        mod = mod.withDescription(moduleDescription);
+      }
+
       const id = await mod.id();
       returnValue = `"${id}"`;
     } else {
