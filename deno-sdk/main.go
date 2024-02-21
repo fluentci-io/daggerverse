@@ -56,6 +56,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 		WithExec([]string{"sh", "-c", "codegen --module . --propagate-logs --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
 		}).
+	        WithExec([]string{"wget", "-P", "/src", "https://cdn.jsdelivr.net/gh/fluent-ci-templates/base-pipeline@main/import_map.json"}).
 		WithExec([]string{
 			"deno",
 			"install",
