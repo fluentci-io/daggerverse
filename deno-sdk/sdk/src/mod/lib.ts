@@ -1,4 +1,4 @@
-import { Client, Directory, DirectoryID } from "../client.ts";
+import { Client, DirectoryID } from "../client.ts";
 import { Metadata } from "./introspect.ts";
 
 export function getReturnType(metadata: Metadata[], functionName: string) {
