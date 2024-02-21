@@ -1,3 +1,7 @@
+/**
+ * @module hello
+ * @description This module contains functions for testing
+ */
 import { Container } from "../src/client.ts";
 
 /**

@@ -8,6 +8,7 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "hello",
       doc: 'Returns "Hello {name}"',
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "name",
@@ -22,6 +23,7 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "add",
       doc: "Returns x + y",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "first number",
@@ -43,6 +45,7 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "join",
       doc: "Returns string joined by ','",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "array of strings",
@@ -57,6 +60,7 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "container",
       doc: "function example with Container as parameter",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "Container instance",
@@ -71,6 +75,7 @@ Deno.test("introspect 'fixtures/hello.ts'", () => {
     {
       functionName: "greet",
       doc: 'Returns "Hello {name}"',
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "name",
@@ -92,6 +97,7 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "hello",
       doc: 'Returns "Hello {name}"',
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "name",
@@ -106,6 +112,7 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "add",
       doc: "Returns x + y",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "first number",
@@ -127,6 +134,7 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "join",
       doc: "Returns string joined by ','",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "array of strings",
@@ -141,6 +149,7 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "container",
       doc: "function example with Container as parameter",
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "Container instance",
@@ -155,6 +164,7 @@ Deno.test("introspect 'fixtures/mod.ts'", () => {
     {
       functionName: "greet",
       doc: 'Returns "Hello {name}"',
+      moduleDescription: "This module contains functions for testing",
       parameters: [
         {
           doc: "name",

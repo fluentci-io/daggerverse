@@ -67,7 +67,10 @@ export function main() {
 
     if (name === "") {
       const moduleName = await client.currentModule().name();
-      let objDef = client.typeDef().withObject(moduleName);
+      let objDef = client.typeDef().withObject(moduleName, {
+        description: metadata.find((m) => m.moduleDescription)
+          ?.moduleDescription,
+      });
 
       for (const key of functions) {
         objDef = await register(client, key, objDef, functionDescription(key));

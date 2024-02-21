@@ -3,6 +3,7 @@ import { ts } from "../../deps.ts";
 export type Metadata = {
   functionName: string;
   doc?: string;
+  moduleDescription?: string;
   parameters: {
     name: string;
     type: string;
@@ -25,9 +26,19 @@ export default function introspect(source: string) {
 
   const checker = program.getTypeChecker();
   const metadata: Metadata[] = [];
+  let moduleDescription: string | undefined = undefined;
 
   for (const file of files) {
     ts.forEachChild(file, (node) => {
+      if (
+        ts.getJSDocTags(node).find((tag) => tag.tagName.getText() === "module")
+      ) {
+        moduleDescription = ts
+          .getJSDocTags(node)
+          .find((tag) => tag.tagName.getText() === "description")
+          ?.comment as string;
+      }
+
       if (ts.isFunctionDeclaration(node)) {
         const signature = checker.getSignatureFromDeclaration(node);
         const returnType = checker.getReturnTypeOfSignature(signature!);
@@ -57,6 +68,7 @@ export default function introspect(source: string) {
 
         metadata.push({
           functionName,
+          moduleDescription,
           doc: docTags
             .map((tag) => tag.comment)
             .find((comment) => comment) as string,
