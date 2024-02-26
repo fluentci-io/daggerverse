@@ -95,7 +95,6 @@ export function main() {
       for (const arg of args) {
         const argName = await arg.name();
         const argValue = await arg.value();
-        console.log("args => ", argName, argValue, typeof argValue);
 
         _variableValues.push({
           [argName]: parseArg(
