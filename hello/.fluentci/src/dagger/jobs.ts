@@ -1,6 +1,6 @@
-import Client, { Directory } from "../../deps.ts";
-import { connect } from "../../sdk/connect.ts";
+import { Directory } from "../../deps.ts";
 import { getDirectory } from "./lib.ts";
+import { dag } from "../../sdk/client.gen.ts";
 
 export enum Job {
   hello = "hello",
@@ -17,22 +17,17 @@ export const exclude = [];
 export async function hello(
   src: string | Directory | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = await getDirectory(client, src);
-    const ctr = client
-      .pipeline("hello")
-      .container()
-      .from("alpine")
-      .withDirectory("/app", context)
-      .withWorkdir("/app")
-      .withExec(["echo", "'Hello, world!'"])
-      .withExec(["echo", "'Hello, again!\nhello'"]);
+  const context = await getDirectory(src);
+  const ctr = dag
+    .pipeline("hello")
+    .container()
+    .from("alpine")
+    .withDirectory("/app", context)
+    .withWorkdir("/app")
+    .withExec(["echo", "'Hello, world!'"])
+    .withExec(["echo", "'Hello, again!\nhello'"]);
 
-    result = await ctr.stdout();
-  });
-
-  return result;
+  return ctr.stdout();
 }
 
 export type JobExec = (src?: string) =>
