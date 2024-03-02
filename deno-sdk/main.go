@@ -122,7 +122,7 @@ func (m *DenoSdk) Base() *Container {
 func (m *DenoSdk) denoBase() *Container {
 	opts := ContainerOpts{}
 	return dag.Container(opts).
-		From("denoland/deno:alpine-1.37.0").
+		From("denoland/deno:alpine-1.41.0").
 		WithExec([]string{"apk", "add", "--no-cache", "git"}).
 		WithMountedCache("/deno-dir", dag.CacheVolume("moddenocache"))
 }
