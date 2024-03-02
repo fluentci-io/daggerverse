@@ -30,7 +30,7 @@ const (
 	ModSourceDirPath      = "/src"
 	RuntimeExecutablePath = "/usr/local/bin/runtime"
 	schemaPath            = "/schema.json"
-	codegenVersion        = "v0.2.0"
+	codegenVersion        = "v0.2.1"
 	sdkSrc                = "/sdk"
 	genDir                = "sdk"
 )
