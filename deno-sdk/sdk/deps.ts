@@ -1,4 +1,8 @@
-export { ClientError, gql, GraphQLClient } from "npm:graphql-request@6.1.0";
+export {
+  ClientError,
+  gql,
+  GraphQLClient,
+} from "https://esm.sh/v128/graphql-request@6.1.0";
 export {
   DaggerSDKError,
   UnknownDaggerError,
