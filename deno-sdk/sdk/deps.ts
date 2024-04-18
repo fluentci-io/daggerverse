@@ -1,8 +1,4 @@
-export {
-  ClientError,
-  gql,
-  GraphQLClient,
-} from "https://esm.sh/v128/graphql-request@6.1.0";
+export { ClientError, gql, GraphQLClient } from "npm:graphql-request@6.1.0";
 export {
   DaggerSDKError,
   UnknownDaggerError,
@@ -16,7 +12,7 @@ export {
   EngineSessionConnectionTimeoutError,
   NotAwaitedRequestError,
   ERROR_CODES,
-} from "https://esm.sh/@dagger.io/dagger@0.9.3";
+} from "./src/common/errors/index.ts";
 
 export * as _ from "https://cdn.skypack.dev/lodash";
 import ts from "npm:typescript";
