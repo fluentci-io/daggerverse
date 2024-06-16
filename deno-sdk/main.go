@@ -35,7 +35,7 @@ const (
 	genDir                = "sdk"
 )
 
-func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*Container, error) {
+func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, introspectionJSON *File) (*Container, error) {
 
 	subPath, err := modSource.SourceSubpath(ctx)
 	if err != nil {
@@ -49,9 +49,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 		// Mount users' module
 		WithMountedDirectory(ModSourceDirPath, modSource.ContextDirectory()).
 		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
-		WithNewFile(schemaPath, ContainerWithNewFileOpts{
-			Contents: introspectionJson,
-		}).
+		WithMountedFile(schemaPath, introspectionJSON).
 		WithExec([]string{"sh", "-c", "ls -lha"}).
 		WithExec([]string{"sh", "-c", "codegen --module . --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
 			ExperimentalPrivilegedNesting: true,
@@ -70,7 +68,7 @@ func (m *DenoSdk) ModuleRuntime(ctx context.Context, modSource *ModuleSource, in
 		WithLabel("io.dagger.module.config", modSubPath), nil
 }
 
-func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspectionJson string) (*GeneratedCode, error) {
+func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspectionJSON *File) (*GeneratedCode, error) {
 
 	subPath, err := modSource.SourceSubpath(ctx)
 	if err != nil {
@@ -80,9 +78,7 @@ func (m *DenoSdk) Codegen(ctx context.Context, modSource *ModuleSource, introspe
 	base := m.Base().
 		WithMountedDirectory(ModSourceDirPath, modSource.ContextDirectory()).
 		WithWorkdir(path.Join(ModSourceDirPath, subPath)).
-		WithNewFile(schemaPath, ContainerWithNewFileOpts{
-			Contents: introspectionJson,
-		})
+		WithMountedFile(schemaPath, introspectionJSON)
 
 	ctr := base.
 		WithExec([]string{"sh", "-c", "codegen --module . --lang deno --introspection-json-path /schema.json"}, ContainerWithExecOpts{
