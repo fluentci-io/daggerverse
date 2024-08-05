@@ -1,0 +1,49 @@
+{{#each item.returnAndArgTypes}}
+import gen/{{this._name}}.\{type {{this.name}}\}
+{{/each}}
+import gen/query_tree.{type QueryTree}
+import gleam/dynamic
+import gleam/dict
+import gleam/list
+
+pub type BaseClient {
+  BaseClient(query_tree: List(QueryTree))
+}
+
+pub fn new(query_tree: List(QueryTree)) -> BaseClient {
+  BaseClient(query_tree)
+}
+
+pub fn connect(query_tree: List(QueryTree)) -> BaseClient {
+  BaseClient(query_tree)
+}
+
+{{#each item.fields}}
+
+{{#if this.description}}
+/// {{this.description}}
+///
+{{/if}}
+pub fn {{this._name}}(base_client: BaseClient{{#each this.args}}, {{this._name}}: {{this.type.name}}{{/each}}) -> {{this.type.name}} {
+  {{#if this.type.isObject}}
+  base_client.new(
+    list.concat([
+      base_client.query_tree,
+      [
+        query_tree.new("{{this.name}}", 
+        dict.new() {{#each this.args}} |> dict.insert("{{this.name}}", dynamic.from({{this._name}})){{/each}})],
+    ]),
+  )
+  {{/if}}
+  {{#unless this.type.isObject}}
+let assert Ok(response) =
+  compute_query(
+    list.concat([base_client.query_tree, [
+      query_tree.new("{{this.name}}", 
+      dict.new(){{#each this.args}} |> dict.insert("{{this.name}}", dynamic.from({{this._name}})){{/each}})]])
+  )
+  response
+  {{/unless}}
+}
+{{/each}}
+
