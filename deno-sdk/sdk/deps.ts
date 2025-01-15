@@ -2,7 +2,7 @@ export {
   ClientError,
   gql,
   GraphQLClient,
-} from "https://esm.sh/v128/graphql-request@6.1.0";
+} from "npm:graphql-request@6.1.0";
 export {
   DaggerSDKError,
   UnknownDaggerError,
@@ -18,7 +18,7 @@ export {
   ERROR_CODES,
 } from "./src/common/errors/index.ts";
 
-export * as _ from "https://cdn.skypack.dev/lodash";
+export * as _ from "npm:lodash";
 import ts from "npm:typescript";
 export { ts };
 export { assert } from "https://deno.land/std@0.205.0/assert/assert.ts";
