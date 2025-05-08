@@ -1,0 +1,6 @@
+import gen/base_client.{type BaseClient}
+
+{{#each objects}}
+pub type {{this}} =
+  BaseClient
+{{/each}}

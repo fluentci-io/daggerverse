@@ -1,0 +1,11 @@
+{{#if item.description}}
+/// {{item.description}}
+///
+{{/if}}
+    pub type {{item.name}} {
+      {{item.name}}({{#each item.inputFields}}{{this._name}}: {{this.type.name}},{{/each}})
+    }
+
+    pub fn new({{#each item.inputFields}}{{this._name}}: {{this.type.name}},{{/each}}) -> {{item.name}} {
+      {{item.name}}({{#each item.inputFields}}{{this._name}},{{/each}})
+    }
